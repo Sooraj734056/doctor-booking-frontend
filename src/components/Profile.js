@@ -27,7 +27,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const { data } = await axios.get('http://localhost:5000/api/users/profile', {
+        const { data } = await axios.get('https://doctor-booking-backend-z54j.onrender.com/api/users/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile(data);
@@ -49,7 +49,7 @@ const Profile = () => {
     setUpdating(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/users/profile', profile, {
+      await axios.put('https://doctor-booking-backend-z54j.onrender.com/api/users/profile', profile, {
         headers: { Authorization: `Bearer ${token}` }
       });
       localStorage.setItem('userName', profile.name);

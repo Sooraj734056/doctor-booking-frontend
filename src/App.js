@@ -1,6 +1,6 @@
 import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -16,13 +16,15 @@ const Conversations = lazy(() => import('./components/Conversations'));
 const Messages = lazy(() => import('./components/Messages'));
 const Profile = lazy(() => import('./components/Profile'));
 
-const socket = io('http://localhost:5000');
+// ✅ Socket connection — fixed to Render live backend
+const socket = io('https://doctor-booking-backend-z54j.onrender.com', {
+  transports: ['websocket'],
+});
 
 function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Decode token to get user ID (simple decode, in production use proper JWT library)
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         socket.emit('join', payload.id);
@@ -31,10 +33,9 @@ function App() {
       }
     }
 
-    // Listen for incoming messages
+    // ✅ Listen for incoming messages
     socket.on('receive_message', (data) => {
       console.log('New message received:', data);
-      // Handle message notification here
       alert(`New message from ${data.from}: ${data.message}`);
     });
 
@@ -45,15 +46,13 @@ function App() {
 
   return (
     <Router>
-      <Header /> {/* Navigation bar */}
+      <Header />
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected Routes */}
           <Route
             path="/doctors"
             element={

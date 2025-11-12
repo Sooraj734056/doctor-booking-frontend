@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -9,14 +9,18 @@ import {
   Paper,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
-import API from "../api";
+import axios from "axios";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import KeyIcon from "@mui/icons-material/Key";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+// 🌐 Backend Base URL
+const API_URL = "https://doctor-booking-backend-z54j.onrender.com/api";
 
 function Register() {
   const navigate = useNavigate();
@@ -30,7 +34,16 @@ function Register() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // 🚫 Redirect if already logged in
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/doctors");
+    }
+  }, [navigate]);
+
+  // 🧾 Step 1: Register user & send OTP
   const handleRegister = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -38,28 +51,46 @@ function Register() {
       return;
     }
     setError("");
+    setLoading(true);
+
     try {
-      const { data } = await API.post("/auth/register", {
-        name,
-        email,
+      const { data } = await axios.post(`${API_URL}/auth/register`, {
+        name: name.trim(),
+        email: email.trim(),
         password,
       });
-      setMessage("OTP sent! Check console preview URL.");
-      console.log("OTP Preview URL:", data.previewUrl);
+
+      setMessage("OTP sent successfully! Check console for preview URL.");
+      console.log("✅ OTP Preview URL:", data.previewUrl);
       setStep(2);
     } catch (err) {
+      console.error("❌ Registration error:", err);
       setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 🔐 Step 2: Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
-      const { data } = await API.post("/auth/verify-otp", { email, otp });
+      const { data } = await axios.post(`${API_URL}/auth/verify-otp`, {
+        email,
+        otp,
+      });
+
+      localStorage.setItem("token", data.token);
       setMessage(data.message);
       navigate("/doctors");
     } catch (err) {
+      console.error("❌ OTP verification error:", err);
       setError(err.response?.data?.message || "OTP verification failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,36 +131,12 @@ function Register() {
           Create Account
         </Typography>
 
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          textAlign="center"
-          sx={{ mb: 3 }}
-        >
-          Register to get started
-        </Typography>
+        {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        {message && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {message}
-          </Alert>
-        )}
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
+        {/* 🧾 Step 1: Register Form */}
         {step === 1 && (
-          <Box
-            component="form"
-            onSubmit={handleRegister}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2.5,
-            }}
-          >
+          <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
             <TextField
               label="Full Name"
               value={name}
@@ -174,10 +181,7 @@ function Register() {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -199,21 +203,18 @@ function Register() {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowConfirm(!showConfirm)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowConfirm(!showConfirm)} edge="end">
                       {showConfirm ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
-
             <Button
               type="submit"
               variant="contained"
               size="large"
+              disabled={loading}
               sx={{
                 mt: 1,
                 py: 1.2,
@@ -223,28 +224,20 @@ function Register() {
                 borderRadius: 3,
                 textTransform: "none",
                 fontSize: "1rem",
-                transition: "0.3s",
                 "&:hover": {
                   background: "linear-gradient(90deg, #1565c0, #1e88e5)",
                   transform: "translateY(-2px)",
                 },
               }}
             >
-              Register
+              {loading ? <CircularProgress size={26} sx={{ color: "#fff" }} /> : "Register"}
             </Button>
           </Box>
         )}
 
+        {/* 🔐 Step 2: OTP Verification */}
         {step === 2 && (
-          <Box
-            component="form"
-            onSubmit={handleVerifyOtp}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2.5,
-            }}
-          >
+          <Box component="form" onSubmit={handleVerifyOtp} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
             <TextField
               label="Enter OTP"
               value={otp}
@@ -263,6 +256,7 @@ function Register() {
               type="submit"
               variant="contained"
               size="large"
+              disabled={loading}
               sx={{
                 mt: 1,
                 py: 1.2,
@@ -272,26 +266,18 @@ function Register() {
                 borderRadius: 3,
                 textTransform: "none",
                 fontSize: "1rem",
-                transition: "0.3s",
                 "&:hover": {
                   background: "linear-gradient(90deg, #1565c0, #1e88e5)",
                   transform: "translateY(-2px)",
                 },
               }}
             >
-              Verify OTP
+              {loading ? <CircularProgress size={26} sx={{ color: "#fff" }} /> : "Verify OTP"}
             </Button>
           </Box>
         )}
 
-        <Typography
-          textAlign="center"
-          sx={{
-            mt: 3,
-            fontSize: "0.95rem",
-            color: "text.secondary",
-          }}
-        >
+        <Typography textAlign="center" sx={{ mt: 3, fontSize: "0.95rem", color: "text.secondary" }}>
           Already have an account?{" "}
           <Button
             onClick={() => navigate("/login")}

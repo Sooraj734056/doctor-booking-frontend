@@ -52,7 +52,7 @@ const MyAppointments = React.memo(() => {
         }
 
         const { data } = await axios.get(
-          "http://localhost:5000/api/appointments/my",
+          "https://doctor-booking-backend-z54j.onrender.com/api/appointments/my",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setAppointments(data);
@@ -68,13 +68,12 @@ const MyAppointments = React.memo(() => {
   }, []);
 
   const handleCancel = useCallback(async (id) => {
-    if (!window.confirm("Are you sure you want to cancel this appointment?"))
-      return;
+    if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
     setCancelingId(id);
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:5000/api/appointments/${id}/cancel`,
+        `https://doctor-booking-backend-z54j.onrender.com/api/appointments/${id}/cancel`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -147,7 +146,7 @@ const MyAppointments = React.memo(() => {
           </Box>
           <Grid container spacing={3}>
             {Array.from({ length: 3 }).map((_, index) => (
-              <Grid xs={12} sm={6} md={4} key={index}>
+              <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card
                   elevation={5}
                   sx={{
@@ -236,9 +235,9 @@ const MyAppointments = React.memo(() => {
             </Typography>
           </Box>
         ) : (
-        <Grid container spacing={3}>
-          {appointments.map((app) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={app._id}>
+          <Grid container spacing={3}>
+            {appointments.map((app) => (
+              <Grid item xs={12} sm={6} md={4} key={app._id}>
                 <Card
                   elevation={5}
                   sx={{
@@ -255,13 +254,7 @@ const MyAppointments = React.memo(() => {
                   }}
                 >
                   <CardContent sx={{ p: 3 }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        mb: 2,
-                      }}
-                    >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                       <Avatar sx={{ bgcolor: "#1976d2", mr: 2 }}>
                         <PersonIcon />
                       </Avatar>
@@ -283,15 +276,11 @@ const MyAppointments = React.memo(() => {
 
                     <Box sx={{ mb: 1 }}>
                       <Typography variant="body2" sx={{ mb: 0.5 }}>
-                        <EventIcon
-                          sx={{ fontSize: 18, verticalAlign: "middle", mr: 1 }}
-                        />
+                        <EventIcon sx={{ fontSize: 18, verticalAlign: "middle", mr: 1 }} />
                         {getAppointmentMessage(app.date)}
                       </Typography>
                       <Typography variant="body2">
-                        <AccessTimeIcon
-                          sx={{ fontSize: 18, verticalAlign: "middle", mr: 1 }}
-                        />
+                        <AccessTimeIcon sx={{ fontSize: 18, verticalAlign: "middle", mr: 1 }} />
                         {app.time}
                       </Typography>
                     </Box>

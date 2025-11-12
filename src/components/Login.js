@@ -10,11 +10,14 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import API from "../api";
+import axios from "axios";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+// 🌍 Backend Base URL (Render)
+const API_URL = "https://doctor-booking-backend-z54j.onrender.com/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -23,18 +26,34 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // 🔑 Handle Login
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    setMessage("");
+
     try {
-      const { data } = await API.post("/auth/login", { email, password });
-      localStorage.setItem("token", data.token);
-      setMessage(data.message);
-      setError("");
-      navigate("/doctors");
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+        setMessage(res.data.message || "✅ Login successful!");
+        console.log("✅ Logged in successfully:", res.data);
+        navigate("/doctors");
+      } else {
+        setError("Invalid server response. Please try again.");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-      setMessage("");
+      console.error("❌ Login error:", err);
+      setError(
+        err.response?.data?.message ||
+          "Unable to login. Please check your credentials."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,15 +91,16 @@ function Login() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Welcome Back
+          Welcome Back 👋
         </Typography>
+
         <Typography
           variant="body1"
           color="text.secondary"
           textAlign="center"
           sx={{ mb: 3 }}
         >
-          Login to continue to your account
+          Please login to continue
         </Typography>
 
         {message && (
@@ -97,11 +117,7 @@ function Login() {
         <Box
           component="form"
           onSubmit={handleSubmit}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2.5,
-          }}
+          sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
         >
           <TextField
             label="Email Address"
@@ -119,6 +135,7 @@ function Login() {
               ),
             }}
           />
+
           <TextField
             label="Password"
             type={showPassword ? "text" : "password"}
@@ -150,6 +167,7 @@ function Login() {
             type="submit"
             variant="contained"
             size="large"
+            disabled={loading}
             sx={{
               mt: 1,
               py: 1.2,
@@ -166,7 +184,7 @@ function Login() {
               },
             }}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </Button>
         </Box>
 

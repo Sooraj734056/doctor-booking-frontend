@@ -1,37 +1,41 @@
-import axios from 'axios';
+import axios from "axios";
+
+// 🔗 Base URL from environment variable (Render or Local)
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://doctor-booking-backend-z54j.onrender.com";
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: `${API_URL}/api`,
 });
 
-// JWT token automatically add karne ke liye
+// 🔒 Automatically add JWT token if available
 API.interceptors.request.use((req) => {
-  const token = localStorage.getItem('token');
-  if (token) req.headers.Authorization = `Bearer ${token}`;
+  const token = localStorage.getItem("token");
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
   return req;
 });
 
-// Auth
-export const loginUser = (credentials) => API.post('/auth/login', credentials);
-export const registerUser = (userData) => API.post('/auth/register', userData);
+// 🧑‍💻 Auth Routes
+export const loginUser = (credentials) => API.post("/auth/login", credentials);
+export const registerUser = (userData) => API.post("/auth/register", userData);
 
-// Doctors
-export const fetchDoctors = () => API.get('/doctors');
+// 👨‍⚕️ Doctor Routes
+export const fetchDoctors = () => API.get("/doctors");
 export const fetchDoctorById = (id) => API.get(`/doctors/${id}`);
 
-// Appointments
+// 📅 Appointment Routes
 export const bookAppointment = (appointmentData) =>
-  API.post('/appointments', appointmentData);
-export const fetchMyAppointments = () =>
-  API.get('/appointments/my');
-export const cancelAppointment = (id) =>
-  API.put(`/appointments/${id}/cancel`);
+  API.post("/appointments", appointmentData);
+export const fetchMyAppointments = () => API.get("/appointments/my");
+export const cancelAppointment = (id) => API.put(`/appointments/${id}/cancel`);
 
-// Messages
+// 💬 Messaging Routes
 export const sendMessage = (messageData) =>
-  API.post('/messages/send', messageData);
-export const fetchConversations = () =>
-  API.get('/messages/conversations');
+  API.post("/messages/send", messageData);
+export const fetchConversations = () => API.get("/messages/conversations");
 export const fetchConversation = (userId) =>
   API.get(`/messages/conversation/${userId}`);
 export const markMessagesAsRead = (userId) =>
