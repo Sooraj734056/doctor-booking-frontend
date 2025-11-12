@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -18,14 +21,17 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
-    "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "react-scripts": "^5.0.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postinstall": "npm install react-scripts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
