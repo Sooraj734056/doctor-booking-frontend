@@ -16,8 +16,8 @@ import LockIcon from "@mui/icons-material/Lock";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-// 🌍 Backend Base URL (Render)
-const API_URL = "https://doctor-booking-backend-z54j.onrender.com/api";
+// 🌍 Backend Base URL (from .env)
+const API_URL = process.env.REACT_APP_API_URL;
 
 function Login() {
   const navigate = useNavigate();
@@ -36,7 +36,10 @@ function Login() {
     setMessage("");
 
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const res = await axios.post(`${API_URL}/api/auth/login`, {
+        email,
+        password,
+      });
 
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);

@@ -19,8 +19,8 @@ import KeyIcon from "@mui/icons-material/Key";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-// 🌐 Backend Base URL
-const API_URL = "https://doctor-booking-backend-z54j.onrender.com/api";
+// 🌐 Backend Base URL (from .env)
+const API_URL = process.env.REACT_APP_API_URL;
 
 function Register() {
   const navigate = useNavigate();
@@ -54,18 +54,18 @@ function Register() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`${API_URL}/auth/register`, {
+      const { data } = await axios.post(`${API_URL}/api/auth/register`, {
         name: name.trim(),
         email: email.trim(),
         password,
       });
 
-      setMessage("OTP sent successfully! Check console for preview URL.");
-      console.log("✅ OTP Preview URL:", data.previewUrl);
+      setMessage("✅ OTP sent successfully! Check your email or console for preview URL.");
+      console.log("🔗 OTP Preview URL:", data.previewUrl);
       setStep(2);
     } catch (err) {
       console.error("❌ Registration error:", err);
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.response?.data?.message || "Registration failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -78,17 +78,21 @@ function Register() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`${API_URL}/auth/verify-otp`, {
+      const { data } = await axios.post(`${API_URL}/api/auth/verify-otp`, {
         email,
         otp,
       });
 
-      localStorage.setItem("token", data.token);
-      setMessage(data.message);
-      navigate("/doctors");
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+        setMessage(data.message || "✅ Registration successful!");
+        navigate("/doctors");
+      } else {
+        setError("Invalid server response. Please try again.");
+      }
     } catch (err) {
       console.error("❌ OTP verification error:", err);
-      setError(err.response?.data?.message || "OTP verification failed");
+      setError(err.response?.data?.message || "OTP verification failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -134,7 +138,7 @@ function Register() {
         {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        {/* 🧾 Step 1: Register Form */}
+        {/* 🧾 Step 1: Registration Form */}
         {step === 1 && (
           <Box component="form" onSubmit={handleRegister} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
             <TextField
@@ -151,8 +155,9 @@ function Register() {
                 ),
               }}
             />
+
             <TextField
-              label="Email"
+              label="Email Address"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -166,6 +171,7 @@ function Register() {
                 ),
               }}
             />
+
             <TextField
               label="Password"
               type={showPassword ? "text" : "password"}
@@ -188,6 +194,7 @@ function Register() {
                 ),
               }}
             />
+
             <TextField
               label="Confirm Password"
               type={showConfirm ? "text" : "password"}
@@ -210,6 +217,7 @@ function Register() {
                 ),
               }}
             />
+
             <Button
               type="submit"
               variant="contained"
@@ -235,7 +243,7 @@ function Register() {
           </Box>
         )}
 
-        {/* 🔐 Step 2: OTP Verification */}
+        {/* 🔐 Step 2: OTP Verification Form */}
         {step === 2 && (
           <Box component="form" onSubmit={handleVerifyOtp} sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
             <TextField
@@ -252,6 +260,7 @@ function Register() {
                 ),
               }}
             />
+
             <Button
               type="submit"
               variant="contained"
