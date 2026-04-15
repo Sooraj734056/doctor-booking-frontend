@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=18"
+    "node": "18.x || 20.x"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -39,7 +39,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postinstall": "npm install react-scripts",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
