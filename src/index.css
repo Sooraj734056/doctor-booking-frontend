@@ -1,15 +1,30 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
   font-family: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8fafc;
   color: #0f172a;
   min-height: 100vh;
+}
+
+/* Fix for horizontal shift on some mobile browsers */
+#root {
+  min-height: 100vh;
+  width: 100%;
   overflow-x: hidden;
 }
 
@@ -33,6 +48,7 @@ body {
 
 .page-transition {
   animation: pageFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
 }
 
 @keyframes pageFadeIn {
@@ -46,14 +62,17 @@ body {
   }
 }
 
-#root {
-  min-height: 100vh;
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
 * {
   box-sizing: border-box;
-  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  max-width: 100%;
 }
+
 
 ::selection {
   background: rgba(37, 99, 235, 0.2);
@@ -63,4 +82,5 @@ body {
 button, a {
   cursor: pointer;
 }
+
 

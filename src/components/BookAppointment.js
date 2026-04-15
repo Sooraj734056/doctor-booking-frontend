@@ -125,33 +125,34 @@ function BookAppointment() {
       <Container maxWidth="lg">
         <Paper
           sx={{
-            p: { xs: 3, md: 4 },
-            mb: 4,
-            borderRadius: 5,
+            p: { xs: 2, sm: 3, md: 4 },
+            mb: { xs: 3, md: 4 },
+            borderRadius: { xs: 4, md: 5 },
             color: "white",
             background:
               "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
           }}
         >
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2.5} alignItems="center" justifyContent="space-between">
+          <Stack direction={{ xs: "column", md: "row" }} spacing={2.5} alignItems={{ xs: "flex-start", md: "center" }} justifyContent="space-between">
             <Box>
-              <Typography variant="overline" sx={{ letterSpacing: "0.22em", color: "rgba(255,255,255,0.72)" }}>
+              <Typography variant="overline" sx={{ letterSpacing: "0.22em", color: "rgba(255,255,255,0.72)", fontSize: { xs: '0.65rem', md: '0.75rem' } }}>
                 Smart booking
               </Typography>
-              <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.4rem" }, lineHeight: 1 }}>
+              <Typography variant="h2" sx={{ fontSize: { xs: "1.8rem", sm: "2.5rem", md: "3.4rem" }, lineHeight: 1.2, fontWeight: 800 }}>
                 Book your appointment in a calmer, smarter flow.
               </Typography>
-              <Typography sx={{ mt: 1.5, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.8 }}>
+              <Typography sx={{ mt: 1.5, color: "rgba(255,255,255,0.8)", maxWidth: 780, lineHeight: 1.8, fontSize: { xs: '0.9rem', md: '1rem' } }}>
                 Choose a doctor, reserve a time, and keep your notes organized in one polished booking screen.
               </Typography>
             </Box>
             <Chip
               icon={<MedicalServicesRoundedIcon sx={{ color: "#67e8f9 !important" }} />}
-              label="Instant confirmation"
-              sx={{ bgcolor: "rgba(255,255,255,0.1)", color: "white", px: 1 }}
+              label="Instant"
+              sx={{ bgcolor: "rgba(255,255,255,0.1)", color: "white", px: 1, mt: { xs: 1, md: 0 } }}
             />
           </Stack>
         </Paper>
+
 
         {message && (
           <Alert severity={severity} sx={{ mb: 3 }}>
@@ -161,6 +162,7 @@ function BookAppointment() {
 
         <Grid container spacing={3}>
           <Grid xs={12} md={7}>
+
             <Card sx={{ borderRadius: 4, bgcolor: "background.paper", border: "1px solid rgba(19,99,223,0.08)" }}>
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
@@ -200,6 +202,7 @@ function BookAppointment() {
 
                     <Grid container spacing={2}>
                       <Grid xs={12} sm={6}>
+
                         <TextField
                           fullWidth
                           type="date"
@@ -256,6 +259,7 @@ function BookAppointment() {
           </Grid>
 
           <Grid xs={12} md={5}>
+
             {selectedDoctorData ? (
               <Card sx={{ borderRadius: 4, bgcolor: "background.paper", border: "1px solid rgba(19,99,223,0.08)" }}>
                 <CardContent sx={{ p: { xs: 3, md: 4 } }}>
@@ -404,13 +408,14 @@ function BookAppointment() {
                   inputProps={{ maxLength: 19 }}
                 />
                 <Grid container spacing={2}>
-                  <Grid item xs={7}>
+                  <Grid xs={7}>
                     <TextField 
                       required fullWidth label="Expiry" placeholder="MM / YY" 
                       onChange={(e) => setCardDetails({...cardDetails, expiry: e.target.value || "MM/YY"})}
                     />
                   </Grid>
-                  <Grid item xs={5}>
+                  <Grid xs={5}>
+
                     <TextField 
                       required fullWidth label="CVC" placeholder="•••" 
                       inputProps={{ maxLength: 3 }}

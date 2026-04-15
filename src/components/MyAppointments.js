@@ -159,24 +159,25 @@ function MyAppointments() {
       <Container maxWidth="lg">
         <Paper
           sx={{
-            p: { xs: 3, md: 4 },
-            mb: 4,
-            borderRadius: 5,
+            p: { xs: 2.5, md: 4 },
+            mb: { xs: 3, md: 4 },
+            borderRadius: { xs: 4, md: 5 },
             color: "white",
             background:
               "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
           }}
         >
-          <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "rgba(255,255,255,0.72)" }}>
+          <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "rgba(255,255,255,0.72)", fontSize: { xs: '0.65rem', md: '0.75rem' } }}>
             Personal dashboard
           </Typography>
-          <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.4rem" }, lineHeight: 1, mt: 1 }}>
+          <Typography variant="h2" sx={{ fontSize: { xs: "1.8rem", sm: "2.5rem", md: "3.4rem" }, lineHeight: 1.2, mt: 1, fontWeight: 800 }}>
             Your appointments at a glance.
           </Typography>
-          <Typography sx={{ mt: 1.5, color: "rgba(255,255,255,0.78)", maxWidth: 760, lineHeight: 1.8 }}>
-            Track pending visits, confirmed bookings, and completed care in a clean dashboard layout.
+          <Typography sx={{ mt: 1.5, color: "rgba(255,255,255,0.78)", maxWidth: 760, lineHeight: 1.8, fontSize: { xs: '0.9rem', md: '1rem' } }}>
+            Track pending visits, confirmed bookings, and completed care in a clean dashboard.
           </Typography>
         </Paper>
+
 
         <Grid container spacing={2} sx={{ mb: 4 }}>
           {[
@@ -186,17 +187,18 @@ function MyAppointments() {
             ["Cancelled", stats.cancelled],
           ].map(([label, value]) => (
             <Grid xs={6} md={3} key={label}>
-              <Paper sx={{ p: 2.5, textAlign: "center", borderRadius: 4 }} elevation={0}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: "primary.main" }}>
+              <Paper sx={{ p: 2, textAlign: "center", borderRadius: 4 }} elevation={0}>
+                <Typography variant="h5" sx={{ fontWeight: 800, color: "primary.main", fontSize: { xs: '1.25rem', md: '2rem' } }}>
                   {value}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 600, fontSize: '0.65rem' }}>
                   {label}
                 </Typography>
               </Paper>
             </Grid>
           ))}
         </Grid>
+
 
         {appointments.length === 0 ? (
           <Paper sx={{ p: 5, textAlign: "center", borderRadius: 4 }} elevation={0}>
@@ -212,6 +214,7 @@ function MyAppointments() {
           <Grid container spacing={3}>
             {appointments.map((app) => (
               <Grid xs={12} sm={6} md={4} key={app._id}>
+
                 <Card
                   sx={{
                     height: "100%",

@@ -129,9 +129,10 @@ function Home() {
                 <Typography
                   variant="h1"
                   sx={{
-                    fontSize: { xs: "3rem", sm: "4rem", md: "5.5rem" },
-                    lineHeight: 1.15,
+                    fontSize: { xs: "2.2rem", sm: "3.5rem", md: "5.5rem" },
+                    lineHeight: { xs: 1.2, md: 1.15 },
                     letterSpacing: "-0.02em",
+                    wordBreak: "break-word",
                   }}
                 >
                   {t('hero_title') || "Healthcare that feels calm, smart, and premium."}
@@ -139,14 +140,17 @@ function Home() {
                 <Typography
                   sx={{
                     maxWidth: 680,
-                    fontSize: { xs: "1.05rem", md: "1.2rem" },
+                    width: "100%",
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                     fontWeight: 500,
                     color: "#ffffff",
-                    lineHeight: 1.8,
+                    lineHeight: { xs: 1.6, md: 1.8 },
+                    opacity: { xs: 0.9, md: 1 },
                   }}
                 >
                   {t('hero_subtitle') || "Discover doctors, book appointments, chat securely, and use AI-powered guidance to decide your next step with confidence."}
                 </Typography>
+
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <Button

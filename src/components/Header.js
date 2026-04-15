@@ -102,6 +102,9 @@ function Header() {
       position="sticky"
       elevation={0}
       sx={{
+        width: "100%",
+        maxWidth: "100vw",
+        overflow: "hidden",
         background:
           "linear-gradient(135deg, rgba(7,18,39,0.92), rgba(8,92,120,0.9) 45%, rgba(19,99,223,0.88))",
         backdropFilter: "blur(18px)",
@@ -110,37 +113,51 @@ function Header() {
     >
       <Toolbar
         sx={{
-          minHeight: 76,
+          minHeight: { xs: 64, md: 76 },
           display: "flex",
           justifyContent: "space-between",
-          gap: 2,
-          px: { xs: 2, md: 3 },
+          gap: 1.5,
+          px: { xs: 1.5, md: 3 },
         }}
       >
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={{ xs: 1, md: 2 }} alignItems="center">
           <Avatar
             sx={{
               bgcolor: "rgba(255,255,255,0.12)",
               color: "white",
-              width: 44,
-              height: 44,
+              width: { xs: 36, md: 44 },
+              height: { xs: 36, md: 44 },
               border: "1px solid rgba(255,255,255,0.2)",
             }}
           >
-            <LocalHospitalIcon />
+            <LocalHospitalIcon fontSize="small" />
           </Avatar>
           <Box component={Link} to="/" sx={{ color: "white", textDecoration: 'none' }}>
             <Typography
-              variant="h5"
-              sx={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 800, lineHeight: 1.1 }}
+              variant="h6"
+              sx={{ 
+                fontFamily: '"Cormorant Garamond", serif', 
+                fontWeight: 800, 
+                lineHeight: 1,
+                fontSize: { xs: '1.1rem', md: '1.5rem' } 
+              }}
             >
               HealthConnect AI
             </Typography>
-            <Typography variant="caption" sx={{ opacity: 0.85, fontWeight: 500, letterSpacing: '0.02em', mt: 0.3, display: 'block' }}>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                opacity: 0.8, 
+                fontWeight: 500, 
+                letterSpacing: '0.01em', 
+                display: { xs: 'none', sm: 'block' } 
+              }}
+            >
               Care that feels intelligent
             </Typography>
           </Box>
         </Stack>
+
 
         <Box sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center", gap: 1 }}>
           <Chip
@@ -228,15 +245,24 @@ function Header() {
           )}
         </Box>
 
-        <Box sx={{ display: { xs: "flex", lg: "none" }, alignItems: "center", gap: 1 }}>
-          <Button onClick={toggleLanguage} sx={{ color: "white", minWidth: 40 }}>
+        <Box sx={{ display: { xs: "flex", lg: "none" }, alignItems: "center", gap: 0.5 }}>
+          <Button 
+            onClick={toggleLanguage} 
+            sx={{ 
+              color: "white", 
+              minWidth: 36,
+              px: 0.5,
+              fontSize: '0.85rem'
+            }}
+          >
             {i18n.language === 'en' ? 'EN' : 'HI'}
           </Button>
           <ThemeToggle />
-          <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: "white" }}>
+          <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: "white", p: 0.8 }}>
             <MenuIcon />
           </IconButton>
         </Box>
+
       </Toolbar>
 
       <Drawer

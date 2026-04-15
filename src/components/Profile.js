@@ -166,9 +166,10 @@ function Profile() {
             </Stack>
           </Box>
 
-          <Box sx={{ p: { xs: 3, md: 4 } }}>
+          <Box sx={{ p: { xs: 2, md: 4 } }}>
             <Grid container spacing={3}>
               <Grid xs={12} md={4}>
+
                 <Paper
                   sx={{
                     p: 2.5,
@@ -246,6 +247,7 @@ function Profile() {
               </Grid>
 
               <Grid xs={12} md={8}>
+
                 <Paper sx={{ p: { xs: 0, md: 0 }, bgcolor: "transparent" }} elevation={0}>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
                     Edit profile
@@ -253,6 +255,7 @@ function Profile() {
                   <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                       <Grid xs={12} sm={6}>
+
                         <TextField
                           label="Full Name"
                           name="name"
@@ -282,6 +285,7 @@ function Profile() {
                         />
                       </Grid>
                       <Grid xs={12} sm={6}>
+
                         <TextField
                           label="Age"
                           name="age"
@@ -297,6 +301,7 @@ function Profile() {
                         />
                       </Grid>
                       <Grid xs={12} sm={6}>
+
                         <TextField
                           select
                           label="Gender"
@@ -333,6 +338,7 @@ function Profile() {
                       </Grid>
                       <Grid xs={12}>
                         <Button
+
                           type="submit"
                           variant="contained"
                           size="large"

@@ -95,20 +95,20 @@ function DoctorDetails() {
         >
           <Box
             sx={{
-              p: { xs: 3, md: 4 },
+              p: { xs: 2.5, md: 4 },
               color: "white",
               background:
                 "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.9))",
             }}
           >
-            <Stack direction={{ xs: "column", md: "row" }} spacing={3} alignItems="center">
+            <Stack direction={{ xs: "column", md: "row" }} spacing={3} alignItems="center" textAlign={{ xs: "center", md: "left" }}>
               <Avatar
                 src={doctor.image}
                 alt={doctor.name}
                 sx={{
-                  width: 140,
-                  height: 140,
-                  border: "4px solid rgba(255,255,255,0.3)",
+                  width: { xs: 100, md: 140 },
+                  height: { xs: 100, md: 140 },
+                  border: "4px solid rgba(255,255,255,0.2)",
                   boxShadow: "0 18px 40px rgba(0,0,0,0.2)",
                   bgcolor: "rgba(255,255,255,0.14)",
                 }}
@@ -116,10 +116,11 @@ function DoctorDetails() {
                 {doctor.name?.charAt(0)}
               </Avatar>
 
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, width: '100%' }}>
                 <Chip
                   icon={<VerifiedRoundedIcon sx={{ color: "#67e8f9 !important" }} />}
-                  label="Verified doctor profile"
+                  label="Verified"
+                  size="small"
                   sx={{
                     mb: 1.5,
                     bgcolor: "rgba(255,255,255,0.08)",
@@ -127,34 +128,36 @@ function DoctorDetails() {
                     border: "1px solid rgba(255,255,255,0.12)",
                   }}
                 />
-                <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.4rem" }, lineHeight: 1 }}>
+                <Typography variant="h2" sx={{ fontSize: { xs: "1.75rem", sm: "2.5rem", md: "3.4rem" }, lineHeight: 1.2, fontWeight: 800 }}>
                   {doctor.name}
                 </Typography>
-                <Typography sx={{ mt: 1, fontSize: "1.1rem", color: "rgba(255,255,255,0.78)" }}>
+                <Typography sx={{ mt: 1, fontSize: { xs: "0.95rem", md: "1.1rem" }, color: "rgba(255,255,255,0.78)" }}>
                   {doctor.specialization}
                 </Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 2, gap: 1 }}>
-                  <Chip label={doctor.location || "Top clinic access"} sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
-                  <Chip label={doctor.timings || "Flexible timings"} sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
-                  <Chip label={doctor.experience ? `${doctor.experience} years experience` : "Experienced care"} sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
+                <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent={{ xs: "center", md: "flex-start" }} sx={{ mt: 2, gap: 1 }}>
+                  <Chip label={doctor.location || "Top clinic"} size="small" sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
+                  <Chip label={doctor.experience ? `${doctor.experience} yrs` : "Experienced"} size="small" sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
                   <IconButton
                     onClick={() => setFavorites(toggleDoctorFavorite(doctor._id))}
+                    size="small"
                     sx={{
                       bgcolor: "rgba(255,255,255,0.1)",
                       color: "white",
                       border: "1px solid rgba(255,255,255,0.12)",
                     }}
                   >
-                    {favorites.includes(doctor._id) ? <FavoriteRoundedIcon color="error" /> : <FavoriteBorderRoundedIcon />}
+                    {favorites.includes(doctor._id) ? <FavoriteRoundedIcon color="error" fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
                   </IconButton>
                 </Stack>
               </Box>
             </Stack>
           </Box>
 
-          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+
+          <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
             <Grid container spacing={3}>
               <Grid xs={12} md={7}>
+
                 <Stack spacing={2.2}>
                   <Paper sx={{ p: 2.5, borderRadius: 4, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
                     <Typography variant="h6" sx={{ mb: 1, fontWeight: 800 }}>
@@ -167,26 +170,27 @@ function DoctorDetails() {
 
                   <Grid container spacing={2}>
                     <Grid xs={12} sm={6}>
-                      <Paper sx={{ p: 2.2, borderRadius: 3, height: "100%" }} elevation={0}>
-                        <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1 }}>
-                          <MedicalInformationRoundedIcon color="primary" />
-                          <Typography fontWeight={800}>Contact</Typography>
+                      <Paper sx={{ p: 2, borderRadius: 3, height: "100%" }} elevation={0}>
+                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                          <MedicalInformationRoundedIcon color="primary" fontSize="small" />
+                          <Typography fontWeight={700} variant="body2">Contact</Typography>
                         </Stack>
-                        <Typography color="text.secondary">{doctor.email}</Typography>
-                        <Typography color="text.secondary">{doctor.phone || "Phone not available"}</Typography>
+                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.email}</Typography>
+                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.phone || "No phone"}</Typography>
                       </Paper>
                     </Grid>
                     <Grid xs={12} sm={6}>
-                      <Paper sx={{ p: 2.2, borderRadius: 3, height: "100%" }} elevation={0}>
-                        <Stack direction="row" spacing={1.2} alignItems="center" sx={{ mb: 1 }}>
-                          <LocationOnRoundedIcon color="primary" />
-                          <Typography fontWeight={800}>Clinic</Typography>
+                      <Paper sx={{ p: 2, borderRadius: 3, height: "100%" }} elevation={0}>
+                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                          <LocationOnRoundedIcon color="primary" fontSize="small" />
+                          <Typography fontWeight={700} variant="body2">Clinic</Typography>
                         </Stack>
-                        <Typography color="text.secondary">{doctor.location || "Location not listed"}</Typography>
-                        <Typography color="text.secondary">{doctor.timings || "Check availability in booking"}</Typography>
+                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.location || "Location not listed"}</Typography>
+                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.timings || "Check availability"}</Typography>
                       </Paper>
                     </Grid>
                   </Grid>
+
 
                   <Paper sx={{ p: 2.5, borderRadius: 4, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
                     <Typography variant="h6" sx={{ mb: 1, fontWeight: 800 }}>
@@ -227,6 +231,7 @@ function DoctorDetails() {
               </Grid>
 
               <Grid xs={12} md={5}>
+
                 <Paper
                   sx={{
                     p: 3,

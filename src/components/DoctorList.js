@@ -87,9 +87,9 @@ function DoctorList() {
       <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4, lg: 5 } }}>
         <Paper
           sx={{
-            p: { xs: 4, md: 6 },
-            borderRadius: "32px",
-            mb: 6,
+            p: { xs: 2, sm: 3, md: 6 },
+            borderRadius: { xs: "20px", md: "32px" },
+            mb: 4,
             color: "white",
             position: "relative",
             overflow: "hidden",
@@ -108,10 +108,11 @@ function DoctorList() {
               height: "400px",
               background: "radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%)",
               zIndex: 0,
+              display: { xs: 'none', md: 'block' }
             }}
           />
 
-          <Grid container spacing={4} alignItems="center" sx={{ position: "relative", zIndex: 1 }}>
+          <Grid container spacing={3} alignItems="center" sx={{ position: "relative", zIndex: 1 }}>
             <Grid item xs={12} md={8}>
               <Typography
                 variant="overline"
@@ -120,7 +121,8 @@ function DoctorList() {
                   color: "#38bdf8", 
                   fontWeight: 800,
                   mb: 1,
-                  display: "block"
+                  display: "block",
+                  fontSize: { xs: '0.65rem', md: '0.75rem' }
                 }}
               >
                 PREMIUM CARE
@@ -128,17 +130,19 @@ function DoctorList() {
               <Typography
                 variant="h2"
                 sx={{ 
-                  fontSize: { xs: "2.5rem", md: "4rem" }, 
-                  lineHeight: 1.1, 
+                  fontSize: { xs: "1.8rem", sm: "2.5rem", md: "4rem" }, 
+                  lineHeight: { xs: 1.2, md: 1.1 }, 
                   fontWeight: 900,
                   mb: 2,
                   background: "linear-gradient(to right, #fff, #94a3b8)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
+                  wordBreak: "break-word"
                 }}
               >
-                Find your perfect <br/> healthcare match.
+                Find your perfect healthcare match.
               </Typography>
+
               <Typography sx={{ maxWidth: 600, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, fontSize: "1.1rem" }}>
                 Connect with world-class specialists through our advanced directory. Premium care is just one click away.
               </Typography>
@@ -159,8 +163,9 @@ function DoctorList() {
         </Paper>
 
         <Box sx={{ mb: 4 }}>
-          <Grid container spacing={3} alignItems="flex-end">
-            <Grid item xs={12} md={5}>
+          <Grid container spacing={2} alignItems="flex-end">
+            <Grid xs={12} md={5}>
+
               <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "#1e293b", ml: 1 }}>
                 Search by Specialist Name
               </Typography>
@@ -186,8 +191,9 @@ function DoctorList() {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={7}>
+            <Grid xs={12} md={7}>
               <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "#1e293b", ml: 1 }}>
+
                 Filter by Expertise
               </Typography>
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -222,38 +228,36 @@ function DoctorList() {
 
 
         {loading ? (
-          <Grid container spacing={3}>
-            {Array.from({ length: 6 }).map((_, index) => (
+          <Grid container spacing={2}>
+            {Array.from({ length: 4 }).map((_, index) => (
               <Grid xs={12} sm={6} md={4} key={index}>
                 <Paper 
                   sx={{ 
-                    p: 4, 
+                    p: 3, 
                     borderRadius: "24px",
-                    backdropFilter: "blur(20px)",
-                    backgroundColor: "rgba(255, 255, 255, 0.4)",
+                    bgcolor: "rgba(255, 255, 255, 0.4)",
                     border: "1px solid rgba(255, 255, 255, 0.4)",
-                    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.04)"
                   }} 
                   elevation={0}
                 >
                   <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
-                    <Skeleton variant="circular" width={68} height={68} animation="wave" />
+                    <Skeleton variant="circular" width={54} height={54} animation="wave" />
                     <Box sx={{ width: '100%' }}>
-                      <Skeleton variant="text" width="75%" height={32} animation="wave" />
-                      <Skeleton variant="text" width="45%" height={24} animation="wave" />
+                      <Skeleton variant="text" width="75%" height={28} animation="wave" />
+                      <Skeleton variant="text" width="45%" height={20} animation="wave" />
                     </Box>
                   </Stack>
-                  <Skeleton variant="rectangular" height={100} sx={{ my: 2, borderRadius: 3 }} animation="wave" />
+                  <Skeleton variant="rectangular" height={80} sx={{ my: 2, borderRadius: 3 }} animation="wave" />
                   <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
-                    <Skeleton variant="rounded" height={45} width="50%" sx={{ borderRadius: "14px" }} animation="wave" />
-                    <Skeleton variant="rounded" height={45} width="50%" sx={{ borderRadius: "14px" }} animation="wave" />
+                    <Skeleton variant="rounded" height={40} width="50%" sx={{ borderRadius: "12px" }} animation="wave" />
+                    <Skeleton variant="rounded" height={40} width="50%" sx={{ borderRadius: "12px" }} animation="wave" />
                   </Stack>
                 </Paper>
               </Grid>
             ))}
           </Grid>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={2.5}>
             {filteredDoctors.map((doc) => (
               <DoctorCard
                 key={doc._id}
@@ -264,6 +268,7 @@ function DoctorList() {
             ))}
           </Grid>
         )}
+
 
         {filteredDoctors.length === 0 && (
           <Paper
