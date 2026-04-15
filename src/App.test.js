@@ -1,8 +1,21 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import { CustomThemeProvider } from './context/ThemeContext';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
+jest.mock('socket.io-client', () => ({
+  io: () => ({
+    emit: jest.fn(),
+    on: jest.fn(),
+    off: jest.fn(),
+  }),
+}));
+
+test('renders app header title', async () => {
+  render(
+    <CustomThemeProvider>
+      <App />
+    </CustomThemeProvider>
+  );
+  const linkElement = await screen.findByText(/healthconnect ai/i);
   expect(linkElement).toBeInTheDocument();
 });

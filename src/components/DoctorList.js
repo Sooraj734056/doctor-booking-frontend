@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { fetchDoctors } from "../api";
 import {
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Typography,
-  Avatar,
-  TextField,
-  InputAdornment,
-  MenuItem,
   Box,
+  Chip,
+  Container,
   Grid,
+  InputAdornment,
   Paper,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { getFavoriteDoctorIds, toggleDoctorFavorite } from "../utils/favorites";
+import DoctorCard from "./DoctorCard";
+
 
 const specialties = [
+  "All",
   "Cardiology",
   "Dermatology",
   "Neurology",
@@ -30,159 +32,260 @@ const specialties = [
   "Psychiatry",
 ];
 
-const DoctorList = () => {
+function DoctorList() {
   const [doctors, setDoctors] = useState([]);
-  const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [specialtyFilter, setSpecialtyFilter] = useState("");
+  const [specialtyFilter, setSpecialtyFilter] = useState("All");
+  const [favorites, setFavorites] = useState(getFavoriteDoctorIds());
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDoctors = async () => {
+    const loadDoctors = async () => {
       try {
-        const res = await axios.get("https://doctor-booking-backend-z54j.onrender.com/api/doctors");
+        const res = await fetchDoctors();
         setDoctors(res.data);
-        setFilteredDoctors(res.data);
       } catch (err) {
         console.error("Error fetching doctors:", err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchDoctors();
+    loadDoctors();
   }, []);
 
-  useEffect(() => {
-    let filtered = doctors;
-    if (searchTerm) {
-      filtered = filtered.filter((doc) =>
-        doc.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    if (specialtyFilter) {
-      filtered = filtered.filter(
-        (doc) => doc.specialization === specialtyFilter
-      );
-    }
-    setFilteredDoctors(filtered);
-  }, [searchTerm, specialtyFilter, doctors]);
+  const filteredDoctors = useMemo(() => {
+    return doctors.filter((doc) => {
+      const matchName = doc.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchSpecialty =
+        specialtyFilter === "All" || doc.specialization === specialtyFilter;
+      return matchName && matchSpecialty;
+    });
+  }, [doctors, searchTerm, specialtyFilter]);
 
-  const handleBook = (doctorId) => {
-    navigate(`/book/${doctorId}`);
+  const stats = useMemo(() => {
+    return {
+      total: doctors.length,
+      visible: filteredDoctors.length,
+      specialties: new Set(doctors.map((doc) => doc.specialization).filter(Boolean)).size,
+    };
+  }, [doctors, filteredDoctors]);
+
+  const handleToggleFavorite = (doctorId) => {
+    setFavorites(toggleDoctorFavorite(doctorId));
   };
 
   return (
-    <Box sx={{ maxWidth: 1100, mx: "auto", my: 6, px: 2 }}>
-      <Typography variant="h4" fontWeight={600} gutterBottom align="center">
-        Our Doctors
-      </Typography>
-
-      {/* Filters */}
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <TextField
-            fullWidth
-            label="Search by Name"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="action" />
-                </InputAdornment>
-              ),
+    <Box
+      sx={{
+        minHeight: "100vh",
+        py: { xs: 4, md: 6 },
+        background:
+          "radial-gradient(circle at top left, rgba(103,232,249,0.18), transparent 30%), radial-gradient(circle at top right, rgba(19,99,223,0.12), transparent 28%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+      }}
+    >
+      <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4, lg: 5 } }}>
+        <Paper
+          sx={{
+            p: { xs: 4, md: 6 },
+            borderRadius: "32px",
+            mb: 6,
+            color: "white",
+            position: "relative",
+            overflow: "hidden",
+            background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+          }}
+        >
+          {/* Subtle abstract background element */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "-20%",
+              right: "-10%",
+              width: "400px",
+              height: "400px",
+              background: "radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%)",
+              zIndex: 0,
             }}
           />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <TextField
-            select
-            fullWidth
-            label="Filter by Specialty"
-            value={specialtyFilter}
-            onChange={(e) => setSpecialtyFilter(e.target.value)}
-            variant="outlined"
-          >
-            <MenuItem value="">All</MenuItem>
-            {specialties.map((spec) => (
-              <MenuItem key={spec} value={spec}>
-                {spec}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-      </Grid>
 
-      {/* Doctors List */}
-      <Grid container spacing={3}>
-        {filteredDoctors.map((doc) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={doc._id}>
-            <Paper
-              elevation={3}
-              sx={{
-                borderRadius: 3,
-                transition: "0.3s",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: 6,
-                },
-                maxWidth: { xs: "100%", sm: 350, md: 400 },
-                mx: "auto",
-              }}
-            >
-              <Card sx={{ textAlign: "center", p: 2 }}>
-                <Avatar
-                  src={doc.image}
-                  alt={doc.name}
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    mx: "auto",
-                    mb: 2,
-                    border: "2px solid #1976d2",
-                  }}
-                >
-                  {doc.name.charAt(0)}
-                </Avatar>
-
-                <CardContent>
-                  <Typography variant="h6">{doc.name}</Typography>
-                  <Typography color="text.secondary">
-                    {doc.specialization}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {doc.email}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {doc.phone}
-                  </Typography>
-                </CardContent>
-
-                <CardActions
-                  sx={{ justifyContent: "center", gap: 1, pb: 2 }}
-                >
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => navigate(`/doctor/${doc._id}`)}
-                  >
-                    View Profile
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleBook(doc._id)}
-                  >
-                    Book Now
-                  </Button>
-                </CardActions>
-              </Card>
-            </Paper>
+          <Grid container spacing={4} alignItems="center" sx={{ position: "relative", zIndex: 1 }}>
+            <Grid item xs={12} md={8}>
+              <Typography
+                variant="overline"
+                sx={{ 
+                  letterSpacing: "0.3em", 
+                  color: "#38bdf8", 
+                  fontWeight: 800,
+                  mb: 1,
+                  display: "block"
+                }}
+              >
+                PREMIUM CARE
+              </Typography>
+              <Typography
+                variant="h2"
+                sx={{ 
+                  fontSize: { xs: "2.5rem", md: "4rem" }, 
+                  lineHeight: 1.1, 
+                  fontWeight: 900,
+                  mb: 2,
+                  background: "linear-gradient(to right, #fff, #94a3b8)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Find your perfect <br/> healthcare match.
+              </Typography>
+              <Typography sx={{ maxWidth: 600, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, fontSize: "1.1rem" }}>
+                Connect with world-class specialists through our advanced directory. Premium care is just one click away.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+                <Box sx={{ p: 2.5, borderRadius: "20px", bgcolor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                  <Typography variant="h3" sx={{ fontWeight: 900, color: "#fff" }}>{stats.total}</Typography>
+                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.4)", fontWeight: 600, textTransform: "uppercase" }}>Active Doctors</Typography>
+                </Box>
+                <Box sx={{ p: 2.5, borderRadius: "20px", bgcolor: "rgba(37, 99, 235, 0.1)", border: "1px solid rgba(37, 99, 235, 0.2)" }}>
+                  <Typography variant="h3" sx={{ fontWeight: 900, color: "#38bdf8" }}>{stats.specialties}</Typography>
+                  <Typography variant="body2" sx={{ color: "rgba(56, 189, 248, 0.6)", fontWeight: 600, textTransform: "uppercase" }}>Specialties</Typography>
+                </Box>
+              </Box>
+            </Grid>
           </Grid>
-        ))}
-      </Grid>
+        </Paper>
+
+        <Box sx={{ mb: 4 }}>
+          <Grid container spacing={3} alignItems="flex-end">
+            <Grid item xs={12} md={5}>
+              <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "#1e293b", ml: 1 }}>
+                Search by Specialist Name
+              </Typography>
+              <TextField
+                fullWidth
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Ex. Dr. Sarah Johnson..."
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: '#2563eb' }} />
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    borderRadius: "16px",
+                    bgcolor: "#fff",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
+                    border: "none",
+                    "& fieldset": { border: "1px solid rgba(0,0,0,0.05)" },
+                    "&:hover fieldset": { borderColor: "#2563eb !important" },
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "#1e293b", ml: 1 }}>
+                Filter by Expertise
+              </Typography>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {specialties.map((specialty) => (
+                  <Chip
+                    key={specialty}
+                    label={specialty}
+                    clickable
+                    onClick={() => setSpecialtyFilter(specialty)}
+                    sx={{ 
+                      borderRadius: "12px",
+                      px: 1,
+                      fontWeight: 700,
+                      py: 2,
+                      transition: "all 0.2s",
+                      bgcolor: specialtyFilter === specialty ? "#2563eb" : "#fff",
+                      color: specialtyFilter === specialty ? "#fff" : "#64748b",
+                      border: "1px solid",
+                      borderColor: specialtyFilter === specialty ? "#2563eb" : "rgba(0,0,0,0.05)",
+                      boxShadow: specialtyFilter === specialty ? "0 8px 15px rgba(37,99,235,0.25)" : "none",
+                      "&:hover": {
+                        bgcolor: specialtyFilter === specialty ? "#1d4ed8" : "rgba(37,99,235,0.05)",
+                        transform: "translateY(-2px)"
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+
+
+        {loading ? (
+          <Grid container spacing={3}>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Grid xs={12} sm={6} md={4} key={index}>
+                <Paper 
+                  sx={{ 
+                    p: 4, 
+                    borderRadius: "24px",
+                    backdropFilter: "blur(20px)",
+                    backgroundColor: "rgba(255, 255, 255, 0.4)",
+                    border: "1px solid rgba(255, 255, 255, 0.4)",
+                    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.04)"
+                  }} 
+                  elevation={0}
+                >
+                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
+                    <Skeleton variant="circular" width={68} height={68} animation="wave" />
+                    <Box sx={{ width: '100%' }}>
+                      <Skeleton variant="text" width="75%" height={32} animation="wave" />
+                      <Skeleton variant="text" width="45%" height={24} animation="wave" />
+                    </Box>
+                  </Stack>
+                  <Skeleton variant="rectangular" height={100} sx={{ my: 2, borderRadius: 3 }} animation="wave" />
+                  <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+                    <Skeleton variant="rounded" height={45} width="50%" sx={{ borderRadius: "14px" }} animation="wave" />
+                    <Skeleton variant="rounded" height={45} width="50%" sx={{ borderRadius: "14px" }} animation="wave" />
+                  </Stack>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Grid container spacing={3}>
+            {filteredDoctors.map((doc) => (
+              <DoctorCard
+                key={doc._id}
+                doc={doc}
+                isFavorite={favorites.includes(doc._id)}
+                onToggleFavorite={handleToggleFavorite}
+              />
+            ))}
+          </Grid>
+        )}
+
+        {filteredDoctors.length === 0 && (
+          <Paper
+            sx={{
+              mt: 4,
+              p: 5,
+              textAlign: "center",
+              borderRadius: 4,
+              bgcolor: "background.paper",
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: 1, fontWeight: 800 }}>
+              No doctors match your filters
+            </Typography>
+            <Typography color="text.secondary">
+              Try a different name or switch the specialty chip back to All.
+            </Typography>
+          </Paper>
+        )}
+      </Container>
     </Box>
   );
-};
+}
 
 export default DoctorList;

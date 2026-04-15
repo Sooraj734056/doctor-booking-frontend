@@ -11,16 +11,13 @@ import {
   IconButton,
   CircularProgress,
 } from "@mui/material";
-import axios from "axios";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import KeyIcon from "@mui/icons-material/Key";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
-// 🌐 Backend Base URL (from .env)
-const API_URL = process.env.REACT_APP_API_URL;
+import { registerUser, verifyOtp } from "../api";
 
 function Register() {
   const navigate = useNavigate();
@@ -54,14 +51,18 @@ function Register() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`${API_URL}/api/auth/register`, {
+      const { data } = await registerUser({
         name: name.trim(),
         email: email.trim(),
         password,
       });
 
-      setMessage("✅ OTP sent successfully! Check your email or console for preview URL.");
-      console.log("🔗 OTP Preview URL:", data.previewUrl);
+      setMessage(
+        data.previewUrl
+          ? `✅ ${data.previewUrl}`
+          : "✅ OTP sent to your email!"
+      );
+      console.log("🔗 OTP Info:", data.previewUrl);
       setStep(2);
     } catch (err) {
       console.error("❌ Registration error:", err);
@@ -78,15 +79,24 @@ function Register() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`${API_URL}/api/auth/verify-otp`, {
+      const { data } = await verifyOtp({
         email,
         otp,
       });
 
       if (data?.token) {
         localStorage.setItem("token", data.token);
+        if (data?.user?.role) {
+          localStorage.setItem("userRole", data.user.role);
+        }
+        if (data?.user?.name) {
+          localStorage.setItem("userName", data.user.name);
+        }
+        if (data?.user?.email) {
+          localStorage.setItem("userEmail", data.user.email);
+        }
         setMessage(data.message || "✅ Registration successful!");
-        navigate("/doctors");
+        navigate(data?.user?.role === "admin" ? "/admin-dashboard" : "/doctors");
       } else {
         setError("Invalid server response. Please try again.");
       }

@@ -1,45 +1,41 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
-import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
+import { fetchMyAppointments, cancelAppointment } from "../api";
 import {
-  Typography,
+  Alert,
+  Avatar,
+  Box,
+  Button,
   Card,
   CardContent,
-  Grid,
-  Button,
-  Alert,
   Chip,
-  Box,
-  Avatar,
-  Divider,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Paper,
   Skeleton,
-  CircularProgress,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { format, isToday, isTomorrow } from "date-fns";
 import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import PersonIcon from "@mui/icons-material/Person";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
+import VideocamRoundedIcon from "@mui/icons-material/VideocamRounded";
+import { JitsiMeeting } from '@jitsi/react-sdk';
 
-const AppointmentStats = React.memo(({ appointments }) => {
-  const stats = useMemo(() => {
-    const total = appointments.length;
-    const upcoming = appointments.filter((a) => a.status === "Confirmed").length;
-    const done = appointments.filter((a) => a.status === "Completed").length;
-    return { total, upcoming, done };
-  }, [appointments]);
-
-  return (
-    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-      Total: {stats.total} | Upcoming: {stats.upcoming} | Done: {stats.done}
-    </Typography>
-  );
-});
-
-const MyAppointments = React.memo(() => {
+function MyAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cancelingId, setCancelingId] = useState(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
+  const [activeMeeting, setActiveMeeting] = useState(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -50,11 +46,7 @@ const MyAppointments = React.memo(() => {
           setLoading(false);
           return;
         }
-
-        const { data } = await axios.get(
-          "https://doctor-booking-backend-z54j.onrender.com/api/appointments/my",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const { data } = await fetchMyAppointments();
         setAppointments(data);
       } catch (err) {
         console.error(err);
@@ -63,31 +55,46 @@ const MyAppointments = React.memo(() => {
         setLoading(false);
       }
     };
-
     fetchAppointments();
   }, []);
 
-  const handleCancel = useCallback(async (id) => {
-    if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
+  const stats = useMemo(() => {
+    const total = appointments.length;
+    const upcoming = appointments.filter((a) => a.status === "Confirmed").length;
+    const done = appointments.filter((a) => a.status === "Completed").length;
+    const cancelled = appointments.filter((a) => a.status === "Cancelled").length;
+    return { total, upcoming, done, cancelled };
+  }, [appointments]);
+
+  const handleCancelClick = (id) => {
+    setAppointmentToCancel(id);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setConfirmDialogOpen(false);
+    setAppointmentToCancel(null);
+  };
+
+  const handleConfirmCancel = async () => {
+    const id = appointmentToCancel;
+    setConfirmDialogOpen(false);
+    setAppointmentToCancel(null);
+    if (!id) return;
+
     setCancelingId(id);
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `https://doctor-booking-backend-z54j.onrender.com/api/appointments/${id}/cancel`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await cancelAppointment(id);
       setAppointments((prev) =>
-        prev.map((app) =>
-          app._id === id ? { ...app, status: "Cancelled" } : app
-        )
+        prev.map((app) => (app._id === id ? { ...app, status: "Cancelled" } : app))
       );
     } catch (err) {
+      console.error("Cancel error:", err);
       alert(err.response?.data?.message || "Failed to cancel appointment");
     } finally {
       setCancelingId(null);
     }
-  }, []);
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -111,192 +118,146 @@ const MyAppointments = React.memo(() => {
     return format(appointmentDate, "MMM dd, yyyy");
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          background: "linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%)",
-          py: 6,
-          px: 2,
-        }}
-      >
-        <Box sx={{ maxWidth: 1000, mx: "auto" }}>
-          <Typography
-            variant="h4"
-            gutterBottom
-            align="center"
-            sx={{ fontWeight: 700, color: "#1565c0", mb: 4 }}
-          >
-            🩺 My Appointments
+      <Box sx={{ minHeight: "100vh", py: 6, px: 2, background: "linear-gradient(180deg, #f7fbff 0%, #e9f3fc 100%)" }}>
+        <Container maxWidth="lg">
+          <Typography variant="h4" sx={{ textAlign: "center", mb: 4, fontWeight: 800 }}>
+            My Appointments
           </Typography>
-          <Box
-            sx={{
-              mb: 4,
-              p: 3,
-              borderRadius: 3,
-              background: "rgba(255,255,255,0.9)",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <CircularProgress size={24} sx={{ mr: 2 }} />
-              <Typography variant="body1">Loading appointments...</Typography>
-            </Box>
-          </Box>
           <Grid container spacing={3}>
             {Array.from({ length: 3 }).map((_, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card
-                  elevation={5}
-                  sx={{
-                    height: "100%",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    background: "rgba(255,255,255,0.9)",
-                    boxShadow: "0 6px 25px rgba(0,0,0,0.08)",
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                      <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
-                      <Box>
-                        <Skeleton variant="text" width={150} height={24} />
-                        <Skeleton variant="text" width={100} height={16} />
-                      </Box>
-                    </Box>
-                    <Divider sx={{ mb: 2 }} />
-                    <Skeleton variant="text" width={100} height={20} sx={{ mb: 1 }} />
-                    <Skeleton variant="text" width={80} height={20} />
-                    <Box sx={{ mt: 2 }}>
-                      <Skeleton variant="rectangular" width={80} height={24} />
-                    </Box>
-                  </CardContent>
-                </Card>
+              <Grid xs={12} sm={6} md={4} key={index}>
+                <Skeleton variant="rounded" height={250} />
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Container>
       </Box>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <Alert severity="error" sx={{ mt: 4, mx: "auto", width: "60%" }}>
-        {error}
-      </Alert>
+      <Box sx={{ px: 2, mt: 4 }}>
+        <Alert severity="error" sx={{ maxWidth: 700, mx: "auto" }}>
+          {error}
+        </Alert>
+      </Box>
     );
+  }
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%)",
-        py: 6,
-        px: 2,
+        py: { xs: 4, md: 6 },
+        background:
+          "radial-gradient(circle at top right, rgba(103,232,249,0.16), transparent 28%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
       }}
     >
-      <Box sx={{ maxWidth: 1000, mx: "auto" }}>
-        <Typography
-          variant="h4"
-          gutterBottom
-          align="center"
-          sx={{ fontWeight: 700, color: "#1565c0", mb: 4 }}
-        >
-          🩺 My Appointments
-        </Typography>
-
-        <Box
+      <Container maxWidth="lg">
+        <Paper
           sx={{
+            p: { xs: 3, md: 4 },
             mb: 4,
-            p: 3,
-            borderRadius: 3,
-            background: "rgba(255,255,255,0.8)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-            backdropFilter: "blur(10px)",
+            borderRadius: 5,
+            color: "white",
+            background:
+              "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
           }}
         >
-          <AppointmentStats appointments={appointments} />
-        </Box>
+          <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "rgba(255,255,255,0.72)" }}>
+            Personal dashboard
+          </Typography>
+          <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.4rem" }, lineHeight: 1, mt: 1 }}>
+            Your appointments at a glance.
+          </Typography>
+          <Typography sx={{ mt: 1.5, color: "rgba(255,255,255,0.78)", maxWidth: 760, lineHeight: 1.8 }}>
+            Track pending visits, confirmed bookings, and completed care in a clean dashboard layout.
+          </Typography>
+        </Paper>
+
+        <Grid container spacing={2} sx={{ mb: 4 }}>
+          {[
+            ["Total", stats.total],
+            ["Upcoming", stats.upcoming],
+            ["Completed", stats.done],
+            ["Cancelled", stats.cancelled],
+          ].map(([label, value]) => (
+            <Grid xs={6} md={3} key={label}>
+              <Paper sx={{ p: 2.5, textAlign: "center", borderRadius: 4 }} elevation={0}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: "primary.main" }}>
+                  {value}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {label}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
 
         {appointments.length === 0 ? (
-          <Box
-            sx={{
-              textAlign: "center",
-              p: 5,
-              background: "rgba(255,255,255,0.8)",
-              borderRadius: 3,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-            }}
-          >
-            <AssignmentIcon sx={{ fontSize: 60, color: "#90caf9", mb: 2 }} />
-            <Typography variant="h6" color="text.secondary">
-              You haven’t booked any appointments yet.
+          <Paper sx={{ p: 5, textAlign: "center", borderRadius: 4 }} elevation={0}>
+            <AssignmentTurnedInRoundedIcon sx={{ fontSize: 64, color: "primary.main", mb: 1 }} />
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
+              No appointments yet
             </Typography>
-          </Box>
+            <Typography color="text.secondary">
+              Once you book an appointment, it will appear here with status and date details.
+            </Typography>
+          </Paper>
         ) : (
           <Grid container spacing={3}>
             {appointments.map((app) => (
-              <Grid item xs={12} sm={6} md={4} key={app._id}>
+              <Grid xs={12} sm={6} md={4} key={app._id}>
                 <Card
-                  elevation={5}
                   sx={{
                     height: "100%",
                     borderRadius: 4,
                     overflow: "hidden",
-                    background: "rgba(255,255,255,0.9)",
-                    boxShadow: "0 6px 25px rgba(0,0,0,0.08)",
-                    transition: "all 0.3s ease",
+                    bgcolor: "background.paper",
+                    border: "1px solid rgba(19,99,223,0.08)",
+                    transition: "transform 180ms ease, box-shadow 180ms ease",
                     "&:hover": {
-                      transform: "translateY(-5px)",
-                      boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+                      transform: "translateY(-6px)",
+                      boxShadow: "0 20px 38px rgba(15,23,42,0.12)",
                     },
                   }}
                 >
                   <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                      <Avatar sx={{ bgcolor: "#1976d2", mr: 2 }}>
+                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
+                      <Avatar sx={{ bgcolor: "primary.main" }}>
                         <PersonIcon />
                       </Avatar>
                       <Box>
-                        <Typography variant="h6" fontWeight={600}>
+                        <Typography variant="h6" sx={{ fontWeight: 800 }}>
                           {app.doctor ? app.doctor.name : "Unknown Doctor"}
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ fontStyle: "italic" }}
-                        >
+                        <Typography variant="body2" color="text.secondary">
                           {app.doctor?.specialization || "-"}
                         </Typography>
                       </Box>
-                    </Box>
+                    </Stack>
 
-                    <Divider sx={{ mb: 2 }} />
-
-                    <Box sx={{ mb: 1 }}>
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>
-                        <EventIcon sx={{ fontSize: 18, verticalAlign: "middle", mr: 1 }} />
-                        {getAppointmentMessage(app.date)}
-                      </Typography>
-                      <Typography variant="body2">
-                        <AccessTimeIcon sx={{ fontSize: 18, verticalAlign: "middle", mr: 1 }} />
-                        {app.time}
-                      </Typography>
-                    </Box>
+                    <Stack spacing={1.2} sx={{ mb: 2 }}>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <EventIcon fontSize="small" color="primary" />
+                        <Typography variant="body2">{getAppointmentMessage(app.date)}</Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <AccessTimeIcon fontSize="small" color="action" />
+                        <Typography variant="body2">{app.time}</Typography>
+                      </Stack>
+                    </Stack>
 
                     {app.notes && (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mt: 1,
-                          p: 1,
-                          bgcolor: "#e3f2fd",
-                          borderRadius: 2,
-                        }}
-                      >
-                        📝 {app.notes}
-                      </Typography>
+                      <Paper sx={{ p: 1.5, borderRadius: 3, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
+                        <Typography variant="body2" color="text.secondary">
+                          {app.notes}
+                        </Typography>
+                      </Paper>
                     )}
 
                     <Box sx={{ mt: 2 }}>
@@ -304,36 +265,40 @@ const MyAppointments = React.memo(() => {
                         label={app.status}
                         color={getStatusColor(app.status)}
                         size="small"
-                        sx={{ fontWeight: 600 }}
+                        sx={{ fontWeight: 800 }}
                       />
                     </Box>
                   </CardContent>
 
                   {app.status !== "Cancelled" && app.status !== "Completed" && (
-                    <Box sx={{ p: 2, pt: 0 }}>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        size="small"
-                        fullWidth
-                        onClick={() => handleCancel(app._id)}
-                        disabled={cancelingId === app._id}
-                        sx={{
-                          textTransform: "none",
-                          fontWeight: 600,
-                          borderRadius: 2,
-                          py: 1,
-                          transition: "0.3s",
-                          "&:hover": {
-                            backgroundColor: "#d32f2f",
-                            transform: "scale(1.03)",
-                          },
-                        }}
-                      >
-                        {cancelingId === app._id
-                          ? "Cancelling..."
-                          : "Cancel Appointment"}
-                      </Button>
+                    <Box sx={{ p: 3, pt: 0 }}>
+                      <Stack spacing={1}>
+                        <Button
+                          variant="contained"
+                          fullWidth
+                          startIcon={<VideocamRoundedIcon />}
+                          onClick={() => setActiveMeeting(app)}
+                          sx={{ 
+                            py: 1.1, 
+                            fontWeight: 800,
+                            background: "linear-gradient(90deg, #67e8f9, #2563eb)",
+                            color: "white"
+                          }}
+                        >
+                          Join Consultation
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                          fullWidth
+                          onClick={() => handleCancelClick(app._id)}
+                          disabled={cancelingId === app._id}
+                          sx={{ py: 1.1, fontWeight: 800 }}
+                        >
+                          {cancelingId === app._id ? "Cancelling..." : "Cancel Appointment"}
+                        </Button>
+                      </Stack>
                     </Box>
                   )}
                 </Card>
@@ -341,9 +306,53 @@ const MyAppointments = React.memo(() => {
             ))}
           </Grid>
         )}
-      </Box>
+
+        <Dialog
+          open={confirmDialogOpen}
+          onClose={handleDialogClose}
+          aria-labelledby="cancel-dialog-title"
+          aria-describedby="cancel-dialog-description"
+        >
+          <DialogTitle id="cancel-dialog-title">Cancel Appointment</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="cancel-dialog-description">
+              Are you sure you want to cancel this appointment? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>No, Keep It</Button>
+            <Button onClick={handleConfirmCancel} color="error" variant="contained" autoFocus>
+              Yes, Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog fullScreen open={Boolean(activeMeeting)} onClose={() => setActiveMeeting(null)}>
+          <Box sx={{ height: '100vh', width: '100vw', bgcolor: '#0f172a', position: 'relative' }}>
+            <Button 
+              onClick={() => setActiveMeeting(null)} 
+              variant="contained"
+              color="error"
+              sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000, fontWeight: 800 }}
+            >
+              End Consultation
+            </Button>
+            {activeMeeting && (
+              <JitsiMeeting
+                roomName={`Consultation-${activeMeeting._id}`}
+                configOverwrite={{
+                  startWithAudioMuted: false,
+                  startWithVideoMuted: false,
+                }}
+                getIFrameRef={(iframeRef) => { iframeRef.style.height = '100%'; iframeRef.style.width = '100%'; }}
+                onReadyToClose={() => setActiveMeeting(null)}
+              />
+            )}
+          </Box>
+        </Dialog>
+      </Container>
     </Box>
   );
-});
+}
 
 export default MyAppointments;

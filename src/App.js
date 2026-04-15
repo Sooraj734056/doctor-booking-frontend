@@ -1,8 +1,11 @@
 import React, { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Box } from '@mui/material';
 import { io } from 'socket.io-client';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 
 // Lazy load components for better performance
 const Login = lazy(() => import('./components/Login'));
@@ -15,40 +18,32 @@ const MyAppointments = lazy(() => import('./components/MyAppointments'));
 const Conversations = lazy(() => import('./components/Conversations'));
 const Messages = lazy(() => import('./components/Messages'));
 const Profile = lazy(() => import('./components/Profile'));
+const AIAssistant = lazy(() => import('./components/AIAssistant'));
+const Favorites = lazy(() => import('./components/Favorites'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const DoctorDashboard = lazy(() => import('./components/DoctorDashboard'));
 
-// ✅ Socket connection — fixed to Render live backend
-const socket = io('https://doctor-booking-backend-z54j.onrender.com', {
+// ✅ Socket connection — uses env variable (localhost for dev, Render for prod)
+const SOCKET_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const socket = io(SOCKET_URL, {
   transports: ['websocket'],
 });
 
-function App() {
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        socket.emit('join', payload.id);
-      } catch (error) {
-        console.error('Error decoding token:', error);
-      }
-    }
-
-    // ✅ Listen for incoming messages
-    socket.on('receive_message', (data) => {
-      console.log('New message received:', data);
-      alert(`New message from ${data.from}: ${data.message}`);
-    });
-
-    return () => {
-      socket.off('receive_message');
-    };
-  }, []);
+function AnimatedRoutes() {
+  const location = useLocation();
 
   return (
-    <Router>
-      <Header />
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -15 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+        className="page-transition"
+      >
+        <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -109,7 +104,72 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/ai-assistant"
+            element={
+              <ProtectedRoute>
+                <AIAssistant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/favorites"
+            element={
+              <ProtectedRoute>
+                <Favorites />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/doctor-dashboard"
+            element={
+              <ProtectedRoute>
+                <DoctorDashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        socket.emit('join', payload.id);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+
+    // ✅ Listen for incoming messages
+    socket.on('receive_message', (data) => {
+      console.log('New message received:', data);
+      alert(`New message from ${data.from}: ${data.message}`);
+    });
+
+    return () => {
+      socket.off('receive_message');
+    };
+  }, []);
+
+  return (
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Header />
+      <Suspense fallback={<div>Loading...</div>}>
+        <AnimatedRoutes />
       </Suspense>
     </Router>
   );

@@ -10,14 +10,11 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import axios from "axios";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
-// 🌍 Backend Base URL (from .env)
-const API_URL = process.env.REACT_APP_API_URL;
+import { loginUser } from "../api";
 
 function Login() {
   const navigate = useNavigate();
@@ -36,16 +33,25 @@ function Login() {
     setMessage("");
 
     try {
-      const res = await axios.post(`${API_URL}/api/auth/login`, {
+      const res = await loginUser({
         email,
         password,
       });
 
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
+        if (res.data?.user?.role) {
+          localStorage.setItem("userRole", res.data.user.role);
+        }
+        if (res.data?.user?.name) {
+          localStorage.setItem("userName", res.data.user.name);
+        }
+        if (res.data?.user?.email) {
+          localStorage.setItem("userEmail", res.data.user.email);
+        }
         setMessage(res.data.message || "✅ Login successful!");
         console.log("✅ Logged in successfully:", res.data);
-        navigate("/doctors");
+        navigate(res.data?.user?.role === "admin" ? "/admin-dashboard" : "/doctors");
       } else {
         setError("Invalid server response. Please try again.");
       }

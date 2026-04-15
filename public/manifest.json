@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "HealthConnect",
+  "name": "HealthConnect AI - Secure Digital Healthcare",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#1363df",
+  "background_color": "#071227",
+  "description": "Book elite doctors, consult via HD video, and use our AI Assistant for smart symptom analysis."
 }

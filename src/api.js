@@ -18,10 +18,27 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+// ✅ Handle 401 Unauthorized globally
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.warn("🔐 Session expired or unauthorized. Redirecting to login...");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      // Redirect to login if not already there
+      if (!window.location.pathname.includes("/login")) {
+        window.location.href = "/login?expired=true";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // 🧑‍💻 Auth Routes
 export const loginUser = (credentials) => API.post("/auth/login", credentials);
 export const registerUser = (userData) => API.post("/auth/register", userData);
-
+export const verifyOtp = (payload) => API.post("/auth/verify-otp", payload);
 // 👨‍⚕️ Doctor Routes
 export const fetchDoctors = () => API.get("/doctors");
 export const fetchDoctorById = (id) => API.get(`/doctors/${id}`);
@@ -40,5 +57,12 @@ export const fetchConversation = (userId) =>
   API.get(`/messages/conversation/${userId}`);
 export const markMessagesAsRead = (userId) =>
   API.put(`/messages/read/${userId}`);
+
+// 🤖 AI Health Assistant
+export const getAiHealthGuidance = (payload) =>
+  API.post("/ai/health-assistant", payload);
+
+// ⭐ Favorites/doctor admin helper data
+export const fetchAdminStats = () => API.get("/admin/stats");
 
 export default API;
