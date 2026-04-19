@@ -11,6 +11,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
@@ -22,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 
 const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -31,16 +34,16 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
           borderRadius: "24px",
           overflow: "hidden",
           backdropFilter: "blur(20px) saturate(180%)",
-          backgroundColor: "rgba(255, 255, 255, 0.7)",
-          border: "1px solid rgba(255, 255, 255, 0.4)",
-          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+          backgroundColor: isDark ? "rgba(14,24,37,0.78)" : "rgba(255, 255, 255, 0.7)",
+          border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(255, 255, 255, 0.4)"}`,
+          boxShadow: isDark ? "0 18px 40px rgba(0,0,0,0.26)" : "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           display: "flex",
           flexDirection: "column",
           "&:hover": {
             transform: "translateY(-8px) scale(1.01)",
-            boxShadow: "0 22px 45px rgba(0,0,0,0.1)",
-            backgroundColor: "rgba(255, 255, 255, 0.85)",
+            boxShadow: isDark ? "0 22px 45px rgba(0,0,0,0.32)" : "0 22px 45px rgba(0,0,0,0.1)",
+            backgroundColor: isDark ? "rgba(14,24,37,0.9)" : "rgba(255, 255, 255, 0.85)",
             "& .card-header-gradient": {
               opacity: 1,
             }
@@ -51,11 +54,13 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
           className="card-header-gradient"
           sx={{
             p: { xs: 2, md: 3 },
-            background: "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(29, 78, 216, 0.05) 100%)",
+            background: isDark
+              ? "linear-gradient(135deg, rgba(116,214,197,0.10) 0%, rgba(242,182,108,0.06) 100%)"
+              : "linear-gradient(135deg, rgba(15,118,110,0.08) 0%, rgba(220,139,69,0.05) 100%)",
             display: "flex",
             alignItems: "flex-start",
             justifyContent: "space-between",
-            borderBottom: "1px solid rgba(0,0,0,0.03)",
+            borderBottom: `1px solid ${isDark ? "rgba(173,196,214,0.08)" : "rgba(0,0,0,0.03)"}`,
             transition: "opacity 0.4s ease",
           }}
         >
@@ -68,7 +73,7 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
                   position: 'absolute',
                   inset: -2,
                   borderRadius: '50%',
-                  border: '2px solid #2563eb',
+                  border: `2px solid ${theme.palette.primary.main}`,
                   opacity: 0.3,
                 }
               }}
@@ -80,7 +85,7 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
                   width: { xs: 54, md: 68 },
                   height: { xs: 54, md: 68 },
                   bgcolor: "primary.main",
-                  border: "2px solid #fff",
+                  border: `2px solid ${isDark ? "#0d1726" : "#fff"}`,
                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 }}
               >
@@ -88,10 +93,10 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
               </Avatar>
             </Box>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: "#1e293b", lineHeight: 1.2, mb: 0.5, fontSize: { xs: '1rem', md: '1.25rem' } }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: "text.primary", lineHeight: 1.2, mb: 0.5, fontSize: { xs: '1rem', md: '1.25rem' } }}>
                 {doc.name}
               </Typography>
-              <Typography variant="body2" sx={{ color: "#2563eb", fontWeight: 600, letterSpacing: '0.02em', textTransform: 'uppercase', fontSize: '0.7rem' }}>
+              <Typography variant="body2" sx={{ color: "primary.main", fontWeight: 600, letterSpacing: '0.02em', textTransform: 'uppercase', fontSize: '0.7rem' }}>
                 {doc.specialization}
               </Typography>
             </Box>
@@ -101,14 +106,14 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
               display: 'flex', 
               alignItems: 'center', 
               gap: 0.5, 
-              background: '#fff', 
+              background: isDark ? "rgba(8,17,27,0.86)" : "#fff", 
               px: 1, 
               py: 0.4, 
               borderRadius: '20px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
             }}>
               <StarRoundedIcon sx={{ color: "#f59e0b", fontSize: '1rem' }} />
-              <Typography variant="body2" sx={{ fontWeight: 800, color: "#1e293b", fontSize: '0.8rem' }}>
+              <Typography variant="body2" sx={{ fontWeight: 800, color: "text.primary", fontSize: '0.8rem' }}>
                 {doc.rating || "4.8"}
               </Typography>
             </Box>
@@ -118,28 +123,28 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
         <CardContent sx={{ p: { xs: 2.5, md: 4 }, flexGrow: 1 }}>
           <Stack spacing={1.5}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-              <Box sx={{ p: 0.7, borderRadius: '8px', bgcolor: 'rgba(37, 99, 235, 0.05)', color: '#2563eb' }}>
+              <Box sx={{ p: 0.7, borderRadius: '8px', bgcolor: isDark ? 'rgba(116,214,197,0.10)' : 'rgba(15,118,110,0.08)', color: 'primary.main' }}>
                 <LocationOnRoundedIcon fontSize="small" />
               </Box>
-              <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 500, fontSize: '0.85rem' }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: '0.85rem' }}>
                 {doc.location || "Location not listed"}
               </Typography>
             </Box>
             
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-              <Box sx={{ p: 0.7, borderRadius: '8px', bgcolor: 'rgba(16, 185, 129, 0.05)', color: '#10b981' }}>
+              <Box sx={{ p: 0.7, borderRadius: '8px', bgcolor: isDark ? 'rgba(91,208,162,0.10)' : 'rgba(39,151,109,0.08)', color: 'success.main' }}>
                 <HealthAndSafetyRoundedIcon fontSize="small" />
               </Box>
-              <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 500, fontSize: '0.85rem' }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: '0.85rem' }}>
                 {doc.qualifications || "Verified specialist"}
               </Typography>
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-              <Box sx={{ p: 0.7, borderRadius: '8px', bgcolor: 'rgba(100, 116, 139, 0.05)', color: '#64748b' }}>
+              <Box sx={{ p: 0.7, borderRadius: '8px', bgcolor: isDark ? 'rgba(173,196,214,0.08)' : 'rgba(100, 116, 139, 0.05)', color: 'text.secondary' }}>
                 <ScheduleRoundedIcon fontSize="small" />
               </Box>
-              <Typography variant="body2" sx={{ color: "#64748b", fontWeight: 500, fontSize: '0.85rem' }}>
+              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 500, fontSize: '0.85rem' }}>
                 {doc.timings || "Mon - Sat • Flexible"}
               </Typography>
             </Box>
@@ -150,8 +155,8 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
               label={`${doc.experience || '10+'} yrs Exp`} 
               size="small" 
               sx={{ 
-                bgcolor: 'rgba(37, 99, 235, 0.15)', 
-                color: '#1e40af', 
+                bgcolor: isDark ? 'rgba(116,214,197,0.14)' : 'rgba(15,118,110,0.12)', 
+                color: 'primary.main', 
                 fontWeight: 700,
                 borderRadius: '8px',
                 fontSize: '0.75rem'
@@ -171,8 +176,8 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
               fontWeight: 700,
               fontSize: { xs: '0.8rem', md: '0.875rem' },
               textTransform: 'none',
-              color: '#475569',
-              borderColor: 'rgba(15, 23, 42, 0.12)',
+              color: 'text.secondary',
+              borderColor: isDark ? 'rgba(173,196,214,0.12)' : 'rgba(15, 23, 42, 0.12)',
             }}
           >
             Profile
@@ -188,9 +193,9 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
               fontWeight: 800,
               fontSize: { xs: '0.8rem', md: '0.875rem' },
               textTransform: 'none',
-              background: 'linear-gradient(90deg, #38bdf8 0%, #2563eb 100%)',
-              color: 'white',
-              boxShadow: '0 4px 15px rgba(37,99,235,0.3)',
+              background: 'linear-gradient(90deg, #74d6c5 0%, #f2b66c 100%)',
+              color: '#143145',
+              boxShadow: '0 4px 15px rgba(220,139,69,0.24)',
             }}
           >
             Book
@@ -198,8 +203,6 @@ const DoctorCard = ({ doc, isFavorite, onToggleFavorite }) => {
         </CardActions>
       </Card>
     </Grid>
-
-
   );
 };
 

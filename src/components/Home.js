@@ -22,7 +22,6 @@ import {
   ShieldRounded,
   StarRounded,
   VerifiedRounded,
-  ScoreRounded,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -96,8 +95,8 @@ function Home() {
           minHeight: { xs: "auto", md: "92vh" },
           py: { xs: 6, md: 10 },
           background:
-            "radial-gradient(circle at top left, rgba(103,232,249,0.18), transparent 30%), radial-gradient(circle at 85% 20%, rgba(19,99,223,0.16), transparent 26%), linear-gradient(180deg, rgba(7,18,39,0.98) 0%, rgba(11,40,76,0.96) 100%)",
-          color: "white",
+            "radial-gradient(circle at top left, rgba(116,214,197,0.2), transparent 30%), radial-gradient(circle at 85% 20%, rgba(242,182,108,0.16), transparent 26%), linear-gradient(180deg, rgba(10,24,36,0.98) 0%, rgba(18,50,61,0.96) 100%)",
+          color: "#fffaf2",
         }}
       >
         <Box
@@ -105,10 +104,10 @@ function Home() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(5,13,27,0.25), rgba(5,13,27,0.7)), url(https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1950&q=80)",
+              "linear-gradient(rgba(7,18,27,0.22), rgba(7,18,27,0.74)), url(https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1950&q=80)",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            opacity: 0.32,
+            opacity: 0.28,
           }}
         />
 
@@ -117,13 +116,13 @@ function Home() {
             <Grid item xs={12} md={7}>
               <Stack spacing={3}>
                 <Chip
-                  icon={<ShieldRounded sx={{ color: "#67e8f9 !important" }} />}
+                  icon={<ShieldRounded sx={{ color: "#a6eadf !important" }} />}
                   label="Secure, modern, AI-assisted healthcare"
                   sx={{
                     width: "fit-content",
-                    bgcolor: "rgba(255,255,255,0.1)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.14)",
+                    bgcolor: "rgba(255,250,242,0.08)",
+                    color: "#fffaf2",
+                    border: "1px solid rgba(255,250,242,0.12)",
                   }}
                 />
                 <Typography
@@ -143,7 +142,7 @@ function Home() {
                     width: "100%",
                     fontSize: { xs: "1rem", md: "1.2rem" },
                     fontWeight: 500,
-                    color: "#ffffff",
+                    color: "rgba(255,250,242,0.9)",
                     lineHeight: { xs: 1.6, md: 1.8 },
                     opacity: { xs: 0.9, md: 1 },
                   }}
@@ -161,9 +160,9 @@ function Home() {
                     sx={{
                       px: 3.5,
                       py: 1.4,
-                      background: "linear-gradient(90deg, #67e8f9, #22c55e)",
-                      color: "#05131f",
-                      boxShadow: "0 16px 40px rgba(34,197,94,0.25)",
+                      background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                      color: "#143145",
+                      boxShadow: "0 18px 40px rgba(242,182,108,0.22)",
                     }}
                   >
                     {isLoggedIn ? t('explore_doctors') : "Get started"}
@@ -175,9 +174,9 @@ function Home() {
                     sx={{
                       px: 3.5,
                       py: 1.4,
-                      borderColor: "rgba(255,255,255,0.42)",
-                      color: "white",
-                      bgcolor: "rgba(255,255,255,0.06)",
+                      borderColor: "rgba(255,250,242,0.32)",
+                      color: "#fffaf2",
+                      bgcolor: "rgba(255,250,242,0.05)",
                     }}
                   >
                     {t('try_ai')}
@@ -190,9 +189,9 @@ function Home() {
                       key={item}
                       label={item}
                       sx={{
-                        bgcolor: "rgba(255,255,255,0.08)",
-                        color: "white",
-                        border: "1px solid rgba(255,255,255,0.1)",
+                        bgcolor: "rgba(255,250,242,0.08)",
+                        color: "#fffaf2",
+                        border: "1px solid rgba(255,250,242,0.1)",
                       }}
                     />
                   ))}
@@ -205,19 +204,19 @@ function Home() {
                 sx={{
                   p: 3,
                   borderRadius: 5,
-                  background: "rgba(8,18,34,0.52)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "0 22px 50px rgba(0,0,0,0.28)",
+                  background: "rgba(16,34,45,0.54)",
+                  border: "1px solid rgba(255,250,242,0.12)",
+                  boxShadow: "0 22px 50px rgba(0,0,0,0.24)",
                 }}
               >
                 <Stack spacing={2.2}>
                   <Stack direction="row" spacing={1.4} alignItems="center">
-                    <Avatar sx={{ bgcolor: "rgba(103,232,249,0.14)", color: "#67e8f9" }}>
+                    <Avatar sx={{ bgcolor: "rgba(116,214,197,0.14)", color: "#a6eadf" }}>
                       <FavoriteRounded />
                     </Avatar>
                     <Box>
                       <Typography fontWeight={800}>Today’s care flow</Typography>
-                      <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
+                      <Typography variant="body2" sx={{ color: "rgba(255,250,242,0.68)" }}>
                         AI triage + doctor booking + live chat
                       </Typography>
                     </Box>
@@ -234,13 +233,13 @@ function Home() {
                         sx={{
                           p: 2,
                           borderRadius: 3,
-                          bgcolor: "rgba(255,255,255,0.08)",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                          color: "white",
+                          bgcolor: "rgba(255,250,242,0.08)",
+                          border: "1px solid rgba(255,250,242,0.08)",
+                          color: "#fffaf2",
                         }}
                       >
                         <Stack direction="row" spacing={1.5} alignItems="center">
-                          <Chip label={step} sx={{ bgcolor: "#67e8f9", color: "#04111f", fontWeight: 800 }} />
+                          <Chip label={step} sx={{ bgcolor: "#f2b66c", color: "#143145", fontWeight: 800 }} />
                           <Typography variant="body2">{text}</Typography>
                         </Stack>
                       </Paper>
@@ -278,7 +277,7 @@ function Home() {
         </Grid>
       </Container>
 
-      <Box sx={{ py: { xs: 4, md: 8 }, background: theme.palette.mode === 'dark' ? "linear-gradient(180deg, rgba(15,23,42,0.55), rgba(30,58,138,0.25))" : "linear-gradient(180deg, rgba(255,255,255,0.55), rgba(219,240,255,0.45))" }}>
+      <Box sx={{ py: { xs: 4, md: 8 }, background: theme.palette.mode === 'dark' ? "linear-gradient(180deg, rgba(11,24,36,0.55), rgba(26,74,78,0.24))" : "linear-gradient(180deg, rgba(255,249,243,0.55), rgba(225,241,236,0.65))" }}>
         <Container maxWidth="xl">
           <Stack spacing={1.5} sx={{ mb: 4 }} alignItems="center" textAlign="center">
             <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "secondary.main", fontWeight: 800 }}>
@@ -307,10 +306,10 @@ function Home() {
                     transition: "transform 180ms ease, box-shadow 180ms ease",
                     "&:hover": {
                       transform: "translateY(-6px)",
-                      boxShadow: "0 20px 38px rgba(15,23,42,0.12)",
+                      boxShadow: "0 22px 42px rgba(20,49,69,0.14)",
                     },
                     backdropFilter: "blur(12px)",
-                    backgroundColor: theme.palette.mode === 'dark' ? "rgba(30,41,59,0.72)" : "rgba(255, 255, 255, 0.72)",
+                    backgroundColor: theme.palette.mode === 'dark' ? "rgba(14,24,37,0.76)" : "rgba(255, 250, 244, 0.78)",
                   }}
                 >
                   <Box sx={{ position: "relative", zIndex: 1, textAlign: "center" }}>
@@ -318,7 +317,7 @@ function Home() {
                       sx={{
                         mb: 2,
                         mx: "auto",
-                        bgcolor: "rgba(19,99,223,0.1)",
+                        bgcolor: theme.palette.mode === 'dark' ? "rgba(116,214,197,0.12)" : "rgba(15,118,110,0.1)",
                         color: "primary.main",
                         width: 54,
                         height: 54,
@@ -381,11 +380,11 @@ function Home() {
                 p: { xs: 3, md: 5 },
                 borderRadius: 5,
                 height: "100%",
-                bgcolor: "linear-gradient(180deg, rgba(7,18,39,0.96), rgba(11,35,66,0.95))",
-                color: "white",
+                bgcolor: "linear-gradient(180deg, rgba(10,24,36,0.96), rgba(18,50,61,0.95))",
+                color: "#fffaf2",
                 background:
-                  "linear-gradient(180deg, rgba(7,18,39,0.96), rgba(11,35,66,0.95))",
-                border: "1px solid rgba(255,255,255,0.08)",
+                  "linear-gradient(180deg, rgba(10,24,36,0.96), rgba(18,50,61,0.95))",
+                border: "1px solid rgba(255,250,242,0.08)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -395,7 +394,7 @@ function Home() {
               <Typography variant="h4" sx={{ mb: 2, fontSize: { xs: "1.7rem", md: "2.2rem" }, fontWeight: 800 }}>
                 Ready to try the new flow?
               </Typography>
-              <Typography sx={{ color: "rgba(255,255,255,0.78)", mb: 4, lineHeight: 1.8, maxWidth: 400, mx: "auto" }}>
+              <Typography sx={{ color: "rgba(255,250,242,0.74)", mb: 4, lineHeight: 1.8, maxWidth: 400, mx: "auto" }}>
                 Start with AI guidance, then move directly to the best doctor and booking flow in one smooth experience.
               </Typography>
               <Button
@@ -405,8 +404,8 @@ function Home() {
                 onClick={() => navigate(isLoggedIn ? "/ai-assistant" : "/register")}
                 sx={{
                   py: 1.8,
-                  background: "linear-gradient(90deg, #67e8f9, #22c55e)",
-                  color: "#04111f",
+                  background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                  color: "#143145",
                   fontWeight: 800,
                   fontSize: "1.1rem"
                 }}
@@ -418,7 +417,7 @@ function Home() {
         </Grid>
       </Container>
 
-      <Box sx={{ py: { xs: 7, md: 10 }, background: theme.palette.mode === 'dark' ? "transparent" : "linear-gradient(180deg, rgba(7,18,39,0.04), rgba(7,18,39,0.08))" }}>
+      <Box sx={{ py: { xs: 7, md: 10 }, background: theme.palette.mode === 'dark' ? "transparent" : "linear-gradient(180deg, rgba(24,54,74,0.03), rgba(24,54,74,0.08))" }}>
         <Container maxWidth="xl">
           <Stack spacing={1.5} sx={{ mb: 6 }} alignItems="center" textAlign="center">
             <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "secondary.main", fontWeight: 800 }}>

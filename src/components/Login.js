@@ -9,6 +9,7 @@ import {
   Paper,
   InputAdornment,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -17,6 +18,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { loginUser } from "../api";
 
 function Login() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,7 +73,9 @@ function Login() {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #1976d2, #42a5f5)",
+        background: isDark
+          ? "radial-gradient(circle at top, rgba(116,214,197,0.14), transparent 30%), linear-gradient(135deg, #08111b, #132437)"
+          : "radial-gradient(circle at top, rgba(116,214,197,0.18), transparent 30%), linear-gradient(135deg, #eef4ff, #f3fbf8)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -85,8 +90,12 @@ function Login() {
           borderRadius: 4,
           p: 4,
           backdropFilter: "blur(12px)",
-          background: "rgba(255, 255, 255, 0.9)",
-          boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.2)",
+          background: isDark ? "rgba(14,24,37,0.88)" : "rgba(255,250,244,0.9)",
+          color: "text.primary",
+          boxShadow: isDark
+            ? "0px 18px 40px rgba(0, 0, 0, 0.34)"
+            : "0px 8px 25px rgba(0, 0, 0, 0.12)",
+          border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(24,54,74,0.08)"}`,
         }}
       >
         <Typography
@@ -95,12 +104,12 @@ function Login() {
           sx={{
             mb: 2,
             fontWeight: "bold",
-            background: "linear-gradient(90deg, #1976d2, #42a5f5)",
+            background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}
         >
-          Welcome Back 👋
+          Welcome Back
         </Typography>
 
         <Typography
@@ -180,15 +189,15 @@ function Login() {
             sx={{
               mt: 1,
               py: 1.2,
-              background: "linear-gradient(90deg, #1976d2, #42a5f5)",
-              color: "#fff",
+              background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+              color: "#143145",
               fontWeight: "bold",
               borderRadius: 3,
               textTransform: "none",
               fontSize: "1rem",
               transition: "0.3s",
               "&:hover": {
-                background: "linear-gradient(90deg, #1565c0, #1e88e5)",
+                background: "linear-gradient(90deg, #61c8b7, #e7a85e)",
                 transform: "translateY(-2px)",
               },
             }}
@@ -210,7 +219,7 @@ function Login() {
             onClick={() => navigate("/register")}
             sx={{
               textTransform: "none",
-              color: "#1976d2",
+              color: "primary.main",
               fontWeight: "bold",
               "&:hover": { textDecoration: "underline" },
             }}

@@ -13,11 +13,14 @@ import {
   Paper,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import { fetchConversations } from "../api";
 
 function Conversations() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -54,7 +57,9 @@ function Conversations() {
       sx={{
         minHeight: "100vh",
         py: { xs: 4, md: 6 },
-        background: "linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+        background: isDark
+          ? "linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+          : "linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)",
       }}
     >
       <Container maxWidth="md">
@@ -65,7 +70,9 @@ function Conversations() {
             borderRadius: 5,
             color: "white",
             background:
-              "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
+              isDark
+                ? "linear-gradient(135deg, rgba(11,29,42,0.96), rgba(22,61,69,0.92))"
+                : "linear-gradient(135deg, rgba(10,24,36,0.96), rgba(18,74,82,0.92))",
           }}
         >
           <Stack direction="row" spacing={1.5} alignItems="center">

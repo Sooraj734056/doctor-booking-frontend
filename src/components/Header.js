@@ -75,20 +75,20 @@ function Header() {
         onClick={() => mobile && setDrawerOpen(false)}
         sx={{
           justifyContent: mobile ? "flex-start" : "center",
-          px: mobile ? 0 : 1.6,
+          px: mobile ? 0.5 : 1.8,
           py: 1,
           borderRadius: 999,
-          color: active ? "white" : "rgba(255,255,255,0.88)",
+          color: active ? "#fffaf2" : "rgba(255,250,242,0.82)",
           bgcolor: active
             ? item.accent
-              ? "rgba(103,232,249,0.22)"
-              : "rgba(255,255,255,0.14)"
+              ? "rgba(242,182,108,0.18)"
+              : "rgba(255,250,242,0.12)"
             : "transparent",
-          border: item.accent ? "1px solid rgba(103,232,249,0.35)" : "1px solid transparent",
+          border: item.accent ? "1px solid rgba(242,182,108,0.32)" : "1px solid transparent",
           fontWeight: 700,
           letterSpacing: "0.01em",
           "&:hover": {
-            bgcolor: item.accent ? "rgba(103,232,249,0.2)" : "rgba(255,255,255,0.12)",
+            bgcolor: item.accent ? "rgba(242,182,108,0.14)" : "rgba(255,250,242,0.1)",
           },
         }}
       >
@@ -106,9 +106,10 @@ function Header() {
         maxWidth: "100vw",
         overflow: "hidden",
         background:
-          "linear-gradient(135deg, rgba(7,18,39,0.92), rgba(8,92,120,0.9) 45%, rgba(19,99,223,0.88))",
+          "linear-gradient(135deg, rgba(11,27,39,0.96), rgba(18,63,74,0.93) 46%, rgba(32,102,97,0.92))",
         backdropFilter: "blur(18px)",
-        borderBottom: "1px solid rgba(255,255,255,0.12)",
+        borderBottom: "1px solid rgba(255,250,242,0.1)",
+        boxShadow: "0 18px 42px rgba(6, 17, 27, 0.16)",
       }}
     >
       <Toolbar
@@ -123,16 +124,16 @@ function Header() {
         <Stack direction="row" spacing={{ xs: 1, md: 2 }} alignItems="center">
           <Avatar
             sx={{
-              bgcolor: "rgba(255,255,255,0.12)",
-              color: "white",
+              bgcolor: "rgba(255,250,242,0.12)",
+              color: "#fffaf2",
               width: { xs: 36, md: 44 },
               height: { xs: 36, md: 44 },
-              border: "1px solid rgba(255,255,255,0.2)",
+              border: "1px solid rgba(255,250,242,0.18)",
             }}
           >
             <LocalHospitalIcon fontSize="small" />
           </Avatar>
-          <Box component={Link} to="/" sx={{ color: "white", textDecoration: 'none' }}>
+          <Box component={Link} to="/" sx={{ color: "#fffaf2", textDecoration: 'none' }}>
             <Typography
               variant="h6"
               sx={{ 
@@ -147,9 +148,9 @@ function Header() {
             <Typography 
               variant="caption" 
               sx={{ 
-                opacity: 0.8, 
+                opacity: 0.74, 
                 fontWeight: 500, 
-                letterSpacing: '0.01em', 
+                letterSpacing: '0.06em', 
                 display: { xs: 'none', sm: 'block' } 
               }}
             >
@@ -162,7 +163,12 @@ function Header() {
         <Box sx={{ display: { xs: "none", lg: "flex" }, alignItems: "center", gap: 1 }}>
           <Chip
             label="24/7 bookings"
-            sx={{ color: "white", bgcolor: "rgba(255,255,255,0.1)", mr: 1 }}
+            sx={{
+              color: "#fffaf2",
+              bgcolor: "rgba(255,250,242,0.1)",
+              border: "1px solid rgba(255,250,242,0.14)",
+              mr: 1
+            }}
           />
           {token ? (
             <>
@@ -178,10 +184,10 @@ function Header() {
                 sx={{
                   ml: 0.5,
                   minWidth: 50,
-                  color: "white",
-                  bgcolor: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.18)" },
+                  color: "#fffaf2",
+                  bgcolor: "rgba(255,250,242,0.08)",
+                  border: "1px solid rgba(255,250,242,0.14)",
+                  "&:hover": { bgcolor: "rgba(255,250,242,0.16)" },
                   px: 1
                 }}
               >
@@ -192,7 +198,7 @@ function Header() {
               <IconButton 
                 component={Link} 
                 to="/messages"
-                sx={{ ml: 1, color: "white", bgcolor: "rgba(255,255,255,0.06)", "&:hover": { bgcolor: "rgba(255,255,255,0.12)" } }}
+                sx={{ ml: 1, color: "#fffaf2", bgcolor: "rgba(255,250,242,0.08)", "&:hover": { bgcolor: "rgba(255,250,242,0.14)" } }}
               >
                 <Badge badgeContent={unreadCount} color="error" overlap="circular">
                   <NotificationsRoundedIcon />
@@ -204,10 +210,10 @@ function Header() {
                 sx={{
                   ml: 1.5,
                   px: 2,
-                  color: "white",
-                  bgcolor: "rgba(255,255,255,0.12)",
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.18)" },
+                  color: "#fffaf2",
+                  bgcolor: "rgba(255,250,242,0.12)",
+                  border: "1px solid rgba(255,250,242,0.14)",
+                  "&:hover": { bgcolor: "rgba(255,250,242,0.18)" },
                 }}
               >
                 Logout
@@ -216,9 +222,9 @@ function Header() {
                 sx={{
                   width: 40,
                   height: 40,
-                  bgcolor: "rgba(255,255,255,0.16)",
-                  color: "white",
-                  border: "1px solid rgba(255,255,255,0.2)",
+                  bgcolor: "rgba(255,250,242,0.16)",
+                  color: "#fffaf2",
+                  border: "1px solid rgba(255,250,242,0.18)",
                 }}
               >
                 {userInitial}
@@ -226,16 +232,16 @@ function Header() {
             </>
           ) : (
             <>
-              <Button component={Link} to="/login" sx={{ color: "white" }}>
+              <Button component={Link} to="/login" sx={{ color: "#fffaf2" }}>
                 Login
               </Button>
               <Button
                 component={Link}
                 to="/register"
                 sx={{
-                  color: "#06253f",
-                  bgcolor: "#d9f4ff",
-                  "&:hover": { bgcolor: "#c8efff" },
+                  color: "#143145",
+                  bgcolor: "#f5d6ab",
+                  "&:hover": { bgcolor: "#efc58f" },
                 }}
               >
                 Register
@@ -249,7 +255,7 @@ function Header() {
           <Button 
             onClick={toggleLanguage} 
             sx={{ 
-              color: "white", 
+              color: "#fffaf2", 
               minWidth: 36,
               px: 0.5,
               fontSize: '0.85rem'
@@ -258,7 +264,7 @@ function Header() {
             {i18n.language === 'en' ? 'EN' : 'HI'}
           </Button>
           <ThemeToggle />
-          <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: "white", p: 0.8 }}>
+          <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: "#fffaf2", p: 0.8 }}>
             <MenuIcon />
           </IconButton>
         </Box>
@@ -272,8 +278,8 @@ function Header() {
         PaperProps={{
           sx: {
             width: "min(88vw, 360px)",
-            background: "linear-gradient(180deg, #071227 0%, #0c1e35 100%)",
-            color: "white",
+            background: "linear-gradient(180deg, #0d1f2a 0%, #153640 100%)",
+            color: "#fffaf2",
             p: 2,
           },
         }}
@@ -282,12 +288,12 @@ function Header() {
           <Typography variant="h6" sx={{ fontWeight: 800 }}>
             Menu
           </Typography>
-          <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: "white" }}>
+          <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: "#fffaf2" }}>
             <CloseIcon />
           </IconButton>
         </Stack>
 
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.12)", mb: 2 }} />
+        <Divider sx={{ borderColor: "rgba(255,250,242,0.12)", mb: 2 }} />
 
         <Stack spacing={1}>
           {token ? (
@@ -300,8 +306,8 @@ function Header() {
                 onClick={handleLogout}
                 sx={{
                   justifyContent: "flex-start",
-                  color: "white",
-                  bgcolor: "rgba(255,255,255,0.1)",
+                  color: "#fffaf2",
+                  bgcolor: "rgba(255,250,242,0.1)",
                 }}
               >
                 Logout

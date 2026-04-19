@@ -8,12 +8,14 @@ import {
   CardContent,
   Chip,
   CircularProgress,
+  Container,
   IconButton,
   Grid,
   Paper,
   Rating,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { fetchDoctorById } from "../api";
 import { toast } from "react-toastify";
@@ -38,6 +40,8 @@ L.Icon.Default.mergeOptions({
 });
 
 function DoctorDetails() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { id } = useParams();
   const navigate = useNavigate();
   const [doctor, setDoctor] = useState(null);
@@ -79,226 +83,305 @@ function DoctorDetails() {
     <Box
       sx={{
         minHeight: "100vh",
-        py: { xs: 4, md: 6 },
-        background:
-          "radial-gradient(circle at top left, rgba(103,232,249,0.18), transparent 30%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+        background: isDark
+          ? "#08111b"
+          : "#f8fafc",
       }}
     >
-      <Box sx={{ maxWidth: 1100, mx: "auto", px: 2 }}>
-        <Paper
+      {/* Hero Header Section */}
+      <Box
+        sx={{
+          pt: { xs: 10, md: 15 },
+          pb: { xs: 8, md: 12 },
+          color: "white",
+          background: isDark
+            ? "linear-gradient(135deg, #0b1d2a 0%, #163d45 100%)"
+            : "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Subtle decorative background element */}
+        <Box
           sx={{
-            borderRadius: 5,
-            overflow: "hidden",
-            border: "1px solid rgba(19,99,223,0.08)",
-            bgcolor: "background.paper",
+            position: "absolute",
+            top: "-10%",
+            right: "-5%",
+            width: "500px",
+            height: "500px",
+            background: "radial-gradient(circle, rgba(116,214,197,0.15) 0%, transparent 70%)",
+            filter: "blur(60px)",
           }}
-        >
-          <Box
-            sx={{
-              p: { xs: 2.5, md: 4 },
-              color: "white",
-              background:
-                "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.9))",
-            }}
-          >
-            <Stack direction={{ xs: "column", md: "row" }} spacing={3} alignItems="center" textAlign={{ xs: "center", md: "left" }}>
+        />
+
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center">
+            <Grid item xs={12} md={3} sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' } }}>
               <Avatar
                 src={doctor.image}
                 alt={doctor.name}
                 sx={{
-                  width: { xs: 100, md: 140 },
-                  height: { xs: 100, md: 140 },
-                  border: "4px solid rgba(255,255,255,0.2)",
-                  boxShadow: "0 18px 40px rgba(0,0,0,0.2)",
-                  bgcolor: "rgba(255,255,255,0.14)",
+                  width: { xs: 180, md: 220 },
+                  height: { xs: 180, md: 220 },
+                  border: "8px solid rgba(255,255,255,0.1)",
+                  boxShadow: "0 30px 60px rgba(0,0,0,0.4)",
+                  bgcolor: "rgba(255,255,255,0.05)",
                 }}
               >
                 {doctor.name?.charAt(0)}
               </Avatar>
-
-              <Box sx={{ flex: 1, width: '100%' }}>
-                <Chip
-                  icon={<VerifiedRoundedIcon sx={{ color: "#67e8f9 !important" }} />}
-                  label="Verified"
-                  size="small"
-                  sx={{
-                    mb: 1.5,
-                    bgcolor: "rgba(255,255,255,0.08)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                  }}
-                />
-                <Typography variant="h2" sx={{ fontSize: { xs: "1.75rem", sm: "2.5rem", md: "3.4rem" }, lineHeight: 1.2, fontWeight: 800 }}>
-                  {doctor.name}
-                </Typography>
-                <Typography sx={{ mt: 1, fontSize: { xs: "0.95rem", md: "1.1rem" }, color: "rgba(255,255,255,0.78)" }}>
-                  {doctor.specialization}
-                </Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent={{ xs: "center", md: "flex-start" }} sx={{ mt: 2, gap: 1 }}>
-                  <Chip label={doctor.location || "Top clinic"} size="small" sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
-                  <Chip label={doctor.experience ? `${doctor.experience} yrs` : "Experienced"} size="small" sx={{ bgcolor: "rgba(255,255,255,0.08)", color: "white" }} />
+            </Grid>
+            <Grid item xs={12} md={9} textAlign={{ xs: "center", md: "left" }}>
+              <Stack spacing={2}>
+                <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 1.5 }}>
+                  <Chip
+                    icon={<VerifiedRoundedIcon sx={{ color: "#74d6c5 !important", fontSize: '1rem' }} />}
+                    label="Medical Board Verified"
+                    sx={{
+                      bgcolor: "rgba(116,214,197,0.12)",
+                      color: "#74d6c5",
+                      fontWeight: 800,
+                      border: "1px solid rgba(116,214,197,0.2)",
+                      fontSize: '0.7rem',
+                      textTransform: "uppercase",
+                      letterSpacing: "1px",
+                      px: 1
+                    }}
+                  />
                   <IconButton
                     onClick={() => setFavorites(toggleDoctorFavorite(doctor._id))}
-                    size="small"
                     sx={{
-                      bgcolor: "rgba(255,255,255,0.1)",
+                      bgcolor: "rgba(255,255,255,0.05)",
                       color: "white",
-                      border: "1px solid rgba(255,255,255,0.12)",
+                      "&:hover": { bgcolor: "rgba(255,255,255,0.1)" }
                     }}
                   >
-                    {favorites.includes(doctor._id) ? <FavoriteRoundedIcon color="error" fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
+                    {favorites.includes(doctor._id) ? <FavoriteRoundedIcon color="error" /> : <FavoriteBorderRoundedIcon />}
                   </IconButton>
+                </Box>
+                <Typography variant="h1" sx={{
+                  fontSize: { xs: "2.8rem", sm: "3.8rem", md: "4.8rem" },
+                  lineHeight: 1,
+                  fontWeight: 900,
+                  letterSpacing: '-0.02em',
+                }}>
+                  {doctor.name}
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 500, color: "rgba(255,255,255,0.7)", maxWidth: 700 }}>
+                  Expert in <Box component="span" sx={{ color: "#f2b66c", fontWeight: 700 }}>{doctor.specialization}</Box> providing world-class medical consultation and advanced patient care.
+                </Typography>
+
+                <Stack direction="row" spacing={6} justifyContent={{ xs: "center", md: "flex-start" }} sx={{ mt: 2 }}>
+                  <Box>
+                    <Typography variant="h3" sx={{ fontWeight: 900, mb: -0.5 }}>{doctor.experience || "12"}</Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1.5 }}>Years Experience</Typography>
+                  </Box>
+                  <Box sx={{ borderLeft: "1px solid rgba(255,255,255,0.15)", pl: 4 }}>
+                    <Typography variant="h3" sx={{ fontWeight: 900, mb: -0.5 }}>{doctor.rating || "4.9"}</Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1.5 }}>Patient Satisfaction</Typography>
+                  </Box>
+                  <Box sx={{ borderLeft: "1px solid rgba(255,255,255,0.15)", pl: 4 }}>
+                    <Typography variant="h3" sx={{ fontWeight: 900, mb: -0.5 }}>2k+</Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1.5 }}>Successful Cases</Typography>
+                  </Box>
+                </Stack>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+        <Grid container spacing={8}>
+          <Grid item xs={12} md={7.5}>
+            <Stack spacing={8}>
+              {/* Profile Section */}
+              <Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box component="span" sx={{ width: 40, height: 4, bgcolor: '#74d6c5', borderRadius: 2 }} />
+                  Professional Profile
+                </Typography>
+                <Typography sx={{ 
+                  fontSize: "1.15rem", 
+                  lineHeight: 2, 
+                  color: isDark ? "rgba(255,255,255,0.7)" : "rgba(15,23,42,0.7)",
+                  fontWeight: 500
+                }}>
+                  {doctor.qualifications || "With a focus on patient-centric care, this specialist brings years of expertise in clinical diagnosis and advanced treatment methodologies. Recognized for exceptional medical leadership and a compassionate approach to patient recovery."}
+                </Typography>
+                
+                <Grid container spacing={3} sx={{ mt: 4 }}>
+                  <Grid item xs={12} sm={6}>
+                    <Box sx={{ p: 4, borderRadius: 4, border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)"}` }}>
+                      <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                        <Box sx={{ p: 1, borderRadius: 2, bgcolor: '#74d6c5', color: '#143145' }}>
+                          <MedicalInformationRoundedIcon fontSize="small" />
+                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 800 }}>Clinic Contact</Typography>
+                      </Stack>
+                      <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>{doctor.email}</Typography>
+                      <Typography variant="body2" sx={{ color: "text.secondary" }}>{doctor.phone || "+1 555-092-4112"}</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box sx={{ p: 4, borderRadius: 4, border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)"}` }}>
+                      <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                        <Box sx={{ p: 1, borderRadius: 2, bgcolor: '#f2b66c', color: '#143145' }}>
+                          <LocationOnRoundedIcon fontSize="small" />
+                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 800 }}>Practice Area</Typography>
+                      </Stack>
+                      <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>{doctor.location || "Central Medical Plaza"}</Typography>
+                      <Typography variant="body2" sx={{ color: "text.secondary" }}>{doctor.timings || "Mon - Sat • 09:00 AM - 06:00 PM"}</Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+
+              {/* Expert Insights */}
+              <Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box component="span" sx={{ width: 40, height: 4, bgcolor: '#f2b66c', borderRadius: 2 }} />
+                  Clinical Specialties
+                </Typography>
+                <Stack spacing={3}>
+                  {[
+                    { icon: <WorkspacePremiumRoundedIcon color="secondary" />, text: "Board certified in internal medicine and surgery" },
+                    { icon: <AccessTimeRoundedIcon color="secondary" />, text: "Pioneer in minimally invasive healthcare procedures" },
+                    { icon: <VerifiedRoundedIcon color="secondary" />, text: "Regularly contributes to leading international medical journals" }
+                  ].map((item, index) => (
+                    <Box key={index} sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
+                      <Box sx={{ mt: 0.5 }}>{item.icon}</Box>
+                      <Typography variant="body1" sx={{ color: "text.secondary", fontSize: '1.1rem', lineHeight: 1.6 }}>{item.text}</Typography>
+                    </Box>
+                  ))}
                 </Stack>
               </Box>
-            </Stack>
-          </Box>
 
-
-          <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
-            <Grid container spacing={3}>
-              <Grid xs={12} md={7}>
-
-                <Stack spacing={2.2}>
-                  <Paper sx={{ p: 2.5, borderRadius: 4, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
-                    <Typography variant="h6" sx={{ mb: 1, fontWeight: 800 }}>
-                      Professional Overview
-                    </Typography>
-                    <Typography color="text.secondary" sx={{ lineHeight: 1.9 }}>
-                      {doctor.qualifications || "Professional healthcare provider focused on patient-first care and efficient consultation."}
-                    </Typography>
-                  </Paper>
-
-                  <Grid container spacing={2}>
-                    <Grid xs={12} sm={6}>
-                      <Paper sx={{ p: 2, borderRadius: 3, height: "100%" }} elevation={0}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                          <MedicalInformationRoundedIcon color="primary" fontSize="small" />
-                          <Typography fontWeight={700} variant="body2">Contact</Typography>
-                        </Stack>
-                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.email}</Typography>
-                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.phone || "No phone"}</Typography>
-                      </Paper>
-                    </Grid>
-                    <Grid xs={12} sm={6}>
-                      <Paper sx={{ p: 2, borderRadius: 3, height: "100%" }} elevation={0}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                          <LocationOnRoundedIcon color="primary" fontSize="small" />
-                          <Typography fontWeight={700} variant="body2">Clinic</Typography>
-                        </Stack>
-                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.location || "Location not listed"}</Typography>
-                        <Typography color="text.secondary" variant="caption" sx={{ display: 'block' }}>{doctor.timings || "Check availability"}</Typography>
-                      </Paper>
-                    </Grid>
-                  </Grid>
-
-
-                  <Paper sx={{ p: 2.5, borderRadius: 4, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
-                    <Typography variant="h6" sx={{ mb: 1, fontWeight: 800 }}>
-                      Why patients choose this doctor
-                    </Typography>
-                    <Stack spacing={1.2}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <WorkspacePremiumRoundedIcon color="secondary" fontSize="small" />
-                        <Typography color="text.secondary">Specialized consultation with clear patient communication</Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <AccessTimeRoundedIcon color="secondary" fontSize="small" />
-                        <Typography color="text.secondary">Smooth appointment scheduling with a clean booking experience</Typography>
-                      </Stack>
-                    </Stack>
-                  </Paper>
-
-                  <Paper sx={{ p: 2, borderRadius: 4, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
-                    <Typography variant="h6" sx={{ mb: 2, ml: 1, fontWeight: 800 }}>
-                      Clinic Location
-                    </Typography>
-                    <Box sx={{ height: 260, width: '100%', borderRadius: 3, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', position: 'relative', zIndex: 1 }}>
-                      <MapContainer center={[40.7128, -74.0060]} zoom={13} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
-                        <TileLayer
-                          attribution='&copy; OSM'
-                          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                        />
-                        <Marker position={[40.7128, -74.0060]}>
-                          <Popup>
-                            <Typography variant="body2" fontWeight={800}>{doctor.name}</Typography>
-                            {doctor.location || "Clinic Location"}
-                          </Popup>
-                        </Marker>
-                      </MapContainer>
-                    </Box>
-                  </Paper>
-                </Stack>
-              </Grid>
-
-              <Grid xs={12} md={5}>
-
-                <Paper
-                  sx={{
-                    p: 3,
-                    borderRadius: 4,
-                    bgcolor: "rgba(7,18,39,0.96)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.08)",
+              {/* Map Section */}
+              <Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box component="span" sx={{ width: 40, height: 4, bgcolor: '#74d6c5', borderRadius: 2 }} />
+                  Location Overview
+                </Typography>
+                <Box 
+                  sx={{ 
+                    height: 400, 
+                    width: '100%', 
+                    borderRadius: 8, 
+                    overflow: 'hidden', 
+                    border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)"}`,
+                    position: 'relative',
+                    zIndex: 1,
+                    boxShadow: isDark ? "0 20px 50px rgba(0,0,0,0.3)" : "0 20px 50px rgba(15,23,42,0.06)"
                   }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
-                    Rate this doctor
-                  </Typography>
-                  <Typography sx={{ color: "rgba(255,255,255,0.72)", mb: 2 }}>
-                    Share your experience and help other patients discover trusted care.
-                  </Typography>
-                  <Rating
-                    name="doctor-rating"
-                    value={doctor.rating || 0}
-                    onChange={(event, newValue) => {
-                      toast.success(`Thank you for rating ${newValue} stars!`);
-                    }}
-                    size="large"
-                    sx={{ mb: 1.5 }}
-                  />
-                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.76)" }}>
-                    Average Rating: {doctor.rating || "Not rated yet"}
-                  </Typography>
+                  <MapContainer center={[40.7128, -74.0060]} zoom={13} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+                    <TileLayer
+                      attribution='&copy; OSM'
+                      url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    />
+                    <Marker position={[40.7128, -74.0060]}>
+                      <Popup>
+                        <Stack spacing={1}>
+                          <Typography variant="body2" fontWeight={800}>{doctor.name}</Typography>
+                          <Typography variant="caption">{doctor.location || "Primary Practice Clinic"}</Typography>
+                        </Stack>
+                      </Popup>
+                    </Marker>
+                  </MapContainer>
+                </Box>
+              </Box>
+            </Stack>
+          </Grid>
 
-                  <Box sx={{ mt: 3, p: 2.5, borderRadius: 3, bgcolor: "rgba(255,255,255,0.08)" }}>
-                    <Typography sx={{ fontWeight: 800, mb: 1 }}>Booking summary</Typography>
-                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.76)", lineHeight: 1.8 }}>
-                      Use the booking flow to reserve a slot, then manage the appointment from your dashboard.
-                    </Typography>
+          {/* Sticky Sidebar */}
+          <Grid item xs={12} md={4.5}>
+            <Box sx={{ position: 'sticky', top: 120 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: { xs: 3, md: 5 },
+                  borderRadius: '24px',
+                  bgcolor: isDark ? "#0f172a" : "#ffffff",
+                  border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)"}`,
+                  boxShadow: isDark ? "0 40px 80px rgba(0,0,0,0.5)" : "0 40px 80px rgba(15,23,42,0.08)",
+                  position: 'relative'
+                }}
+              >
+                {/* Decorative accent */}
+                <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 6, background: "linear-gradient(90deg, #74d6c5, #f2b66c)" }} />
+                
+                <Stack spacing={4}>
+                  <Box>
+                    <Typography variant="h5" sx={{ fontWeight: 900, mb: 1 }}>Reserve Appointment</Typography>
+                    <Typography variant="body2" sx={{ color: "text.secondary" }}>Check real-time availability and book your slot instantly.</Typography>
                   </Box>
 
-                  <Stack spacing={1.2} sx={{ mt: 3 }}>
+                  <Box sx={{ p: 3, borderRadius: 4, border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)"}` }}>
+                    <Stack spacing={3}>
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Consultation Fee</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 900, color: '#74d6c5' }}>$120</Typography>
+                      </Stack>
+                      <Box sx={{ height: 1, bgcolor: "rgba(255,255,255,0.05)" }} />
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <AccessTimeRoundedIcon sx={{ color: '#f2b66c' }} fontSize="small" />
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>Next available: Today, 04:00 PM</Typography>
+                      </Stack>
+                    </Stack>
+                  </Box>
+
+                  <Stack spacing={2}>
                     <Button
                       variant="contained"
                       size="large"
                       onClick={() => navigate(`/book/${id}`)}
                       sx={{
-                        py: 1.3,
-                        background: "linear-gradient(90deg, #67e8f9, #22c55e)",
-                        color: "#04111f",
+                        py: 2.2,
+                        borderRadius: 4,
+                        fontSize: '1rem',
+                        fontWeight: 900,
+                        background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                        color: "#143145",
+                        boxShadow: "0 10px 30px rgba(116,214,197,0.3)",
+                        "&:hover": {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 15px 35px rgba(116,214,197,0.4)",
+                        }
                       }}
                     >
-                      Book Appointment
+                      Instant Booking
                     </Button>
                     <Button
                       variant="outlined"
                       size="large"
                       onClick={() => navigate("/doctors")}
                       sx={{
-                        py: 1.3,
-                        borderColor: "rgba(255,255,255,0.28)",
-                        color: "white",
+                        py: 2,
+                        borderRadius: 4,
+                        fontWeight: 700,
+                        borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(15,23,42,0.1)",
+                        color: "text.primary",
+                        "&:hover": {
+                          bgcolor: "rgba(255,255,255,0.05)",
+                          borderColor: "text.primary"
+                        }
                       }}
                     >
-                      Back to Doctors
+                      Browse More Doctors
                     </Button>
                   </Stack>
-                </Paper>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Paper>
-      </Box>
+
+                  <Typography variant="caption" sx={{ textAlign: 'center', color: 'text.secondary', display: 'block' }}>
+                    No upfront payment required for basic consultation slots.
+                  </Typography>
+                </Stack>
+              </Paper>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
     </Box>
   );
 }

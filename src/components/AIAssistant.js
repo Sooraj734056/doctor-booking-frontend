@@ -10,6 +10,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
@@ -37,6 +38,8 @@ const urgencyColor = {
 };
 
 function AIAssistant() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [symptoms, setSymptoms] = useState("");
   const [duration, setDuration] = useState("");
   const [age, setAge] = useState("");
@@ -107,7 +110,9 @@ function AIAssistant() {
         py: { xs: 3, md: 5 },
         px: 2,
         background:
-          "radial-gradient(circle at 10% 20%, rgba(0,188,212,0.15), transparent 35%), radial-gradient(circle at 80% 0%, rgba(255,112,67,0.15), transparent 30%), linear-gradient(180deg, #f4fbff 0%, #eef6ff 45%, #f7fbff 100%)",
+          isDark
+            ? "radial-gradient(circle at 10% 20%, rgba(116,214,197,0.12), transparent 35%), radial-gradient(circle at 80% 0%, rgba(242,182,108,0.10), transparent 30%), linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+            : "radial-gradient(circle at 10% 20%, rgba(116,214,197,0.15), transparent 35%), radial-gradient(circle at 80% 0%, rgba(242,182,108,0.14), transparent 30%), linear-gradient(180deg, #f3fbf8 0%, #eef4ff 45%, #f7f4ec 100%)",
       }}
     >
       <Box sx={{ maxWidth: 1100, mx: "auto" }}>
@@ -118,9 +123,11 @@ function AIAssistant() {
             p: { xs: 2.5, md: 4 },
             mb: 3,
             background:
-              "linear-gradient(130deg, rgba(13,71,161,0.95), rgba(0,96,100,0.9))",
+              isDark
+                ? "linear-gradient(130deg, rgba(11,29,42,0.96), rgba(22,61,69,0.92))"
+                : "linear-gradient(130deg, rgba(10,24,36,0.96), rgba(18,74,82,0.92))",
             color: "white",
-            boxShadow: "0 20px 40px rgba(10,40,90,0.2)",
+            boxShadow: isDark ? "0 20px 40px rgba(0,0,0,0.28)" : "0 20px 40px rgba(10,40,90,0.2)",
           }}
         >
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
@@ -141,8 +148,8 @@ function AIAssistant() {
               sx={{
                 p: 3,
                 borderRadius: 4,
-                border: "1px solid rgba(25,118,210,0.2)",
-                background: "rgba(255,255,255,0.86)",
+                border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(25,118,210,0.2)"}`,
+                background: isDark ? "rgba(14,24,37,0.88)" : "rgba(255,255,255,0.86)",
                 backdropFilter: "blur(8px)",
               }}
             >
@@ -158,8 +165,8 @@ function AIAssistant() {
                     onClick={() => setSymptoms(prompt)}
                     sx={{
                       borderRadius: "10px",
-                      bgcolor: "rgba(25,118,210,0.1)",
-                      "&:hover": { bgcolor: "rgba(25,118,210,0.2)" },
+                      bgcolor: isDark ? "rgba(173,196,214,0.08)" : "rgba(25,118,210,0.1)",
+                      "&:hover": { bgcolor: isDark ? "rgba(173,196,214,0.14)" : "rgba(25,118,210,0.2)" },
                     }}
                   />
                 ))}
@@ -182,7 +189,7 @@ function AIAssistant() {
                             onClick={handleVoiceInput} 
                             color={listening ? "error" : "primary"}
                             sx={{ 
-                              bgcolor: listening ? "rgba(239,68,68,0.1)" : "rgba(37,99,235,0.1)",
+                              bgcolor: listening ? "rgba(239,68,68,0.1)" : (isDark ? "rgba(173,196,214,0.08)" : "rgba(37,99,235,0.1)"),
                               transition: 'all 0.2s',
                               animation: listening ? 'pulse 1.5s infinite' : 'none'
                             }}
@@ -224,7 +231,8 @@ function AIAssistant() {
                       borderRadius: 2.5,
                       fontWeight: 700,
                       textTransform: "none",
-                      background: "linear-gradient(90deg, #006064, #00838f)",
+                      background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                      color: "#143145",
                     }}
                   >
                     {loading ? "Analyzing..." : "Analyze Symptoms"}
@@ -241,8 +249,8 @@ function AIAssistant() {
                 p: 3,
                 borderRadius: 4,
                 minHeight: 540,
-                border: "1px solid rgba(25,118,210,0.2)",
-                background: "rgba(255,255,255,0.86)",
+                border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(25,118,210,0.2)"}`,
+                background: isDark ? "rgba(14,24,37,0.88)" : "rgba(255,255,255,0.86)",
                 backdropFilter: "blur(8px)",
               }}
             >
@@ -269,26 +277,26 @@ function AIAssistant() {
                     {sourceLabel && <Chip label={sourceLabel} variant="outlined" />}
                   </Stack>
 
-                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: "#f8fbff" }} elevation={0}>
+                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: isDark ? "rgba(173,196,214,0.08)" : "#f8fbff" }} elevation={0}>
                     <Typography sx={{ fontWeight: 700, mb: 0.5 }}>Summary</Typography>
                     <Typography variant="body2">{result.summary}</Typography>
                   </Paper>
 
-                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: "#f8fbff" }} elevation={0}>
+                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: isDark ? "rgba(173,196,214,0.08)" : "#f8fbff" }} elevation={0}>
                     <Typography sx={{ fontWeight: 700, mb: 0.5 }}>Possible Causes</Typography>
                     {(result.possibleCauses || []).map((item) => (
                       <Typography key={item} variant="body2">• {item}</Typography>
                     ))}
                   </Paper>
 
-                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: "#f8fbff" }} elevation={0}>
+                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: isDark ? "rgba(173,196,214,0.08)" : "#f8fbff" }} elevation={0}>
                     <Typography sx={{ fontWeight: 700, mb: 0.5 }}>Next Steps</Typography>
                     {(result.nextSteps || []).map((item) => (
                       <Typography key={item} variant="body2">• {item}</Typography>
                     ))}
                   </Paper>
 
-                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: "#fff7f7" }} elevation={0}>
+                  <Paper sx={{ p: 2, borderRadius: 2.5, bgcolor: isDark ? "rgba(239,68,68,0.10)" : "#fff7f7" }} elevation={0}>
                     <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
                       <LocalHospitalIcon color="error" fontSize="small" />
                       <Typography sx={{ fontWeight: 700 }}>Warning Signs</Typography>
@@ -309,8 +317,8 @@ function AIAssistant() {
                       mt: 1, 
                       py: 1.5, 
                       borderRadius: 3,
-                      background: 'linear-gradient(90deg, #1e3a8a, #3b82f6)', 
-                      color: 'white', 
+                      background: 'linear-gradient(90deg, #74d6c5, #f2b66c)', 
+                      color: '#143145', 
                       fontWeight: 800 
                     }}
                   >

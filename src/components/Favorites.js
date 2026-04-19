@@ -13,6 +13,7 @@ import {
   Paper,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
@@ -20,6 +21,8 @@ import { fetchDoctors } from "../api";
 import { getFavoriteDoctorIds, toggleDoctorFavorite } from "../utils/favorites";
 
 function Favorites() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [doctors, setDoctors] = useState([]);
   const [favorites, setFavorites] = useState(getFavoriteDoctorIds());
   const navigate = useNavigate();
@@ -51,7 +54,9 @@ function Favorites() {
         minHeight: "100vh",
         py: { xs: 4, md: 6 },
         background:
-          "radial-gradient(circle at top right, rgba(255,105,135,0.14), transparent 24%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+          isDark
+            ? "radial-gradient(circle at top right, rgba(242,182,108,0.10), transparent 24%), linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+            : "radial-gradient(circle at top right, rgba(242,182,108,0.14), transparent 24%), linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)",
       }}
     >
       <Container maxWidth="lg">
@@ -62,7 +67,9 @@ function Favorites() {
             borderRadius: 5,
             color: "white",
             background:
-              "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(139,38,83,0.92))",
+              isDark
+                ? "linear-gradient(135deg, rgba(11,29,42,0.96), rgba(86,44,53,0.92))"
+                : "linear-gradient(135deg, rgba(10,24,36,0.96), rgba(127,63,54,0.9))",
           }}
         >
           <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "rgba(255,255,255,0.72)" }}>

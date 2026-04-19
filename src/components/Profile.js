@@ -11,6 +11,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -28,6 +29,8 @@ import { useNavigate } from "react-router-dom";
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 function Profile() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -114,7 +117,9 @@ function Profile() {
         minHeight: "100vh",
         py: { xs: 4, md: 6 },
         background:
-          "radial-gradient(circle at top right, rgba(103,232,249,0.16), transparent 30%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+          isDark
+            ? "radial-gradient(circle at top right, rgba(116,214,197,0.12), transparent 30%), linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+            : "radial-gradient(circle at top right, rgba(116,214,197,0.16), transparent 30%), linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)",
       }}
     >
       <Container maxWidth="md">
@@ -122,7 +127,7 @@ function Profile() {
           sx={{
             borderRadius: 5,
             overflow: "hidden",
-            border: "1px solid rgba(19,99,223,0.08)",
+            border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(19,99,223,0.08)"}`,
             bgcolor: "background.paper",
           }}
         >
@@ -131,7 +136,9 @@ function Profile() {
               p: { xs: 3, md: 4 },
               color: "white",
               background:
-                "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
+                isDark
+                  ? "linear-gradient(135deg, rgba(11,29,42,0.96), rgba(22,61,69,0.92))"
+                  : "linear-gradient(135deg, rgba(10,24,36,0.96), rgba(18,74,82,0.92))",
               textAlign: "center",
             }}
           >
@@ -150,7 +157,7 @@ function Profile() {
             >
               {profile.name ? profile.name.charAt(0).toUpperCase() : "?"}
             </Avatar>
-            <Typography variant="overline" sx={{ letterSpacing: "0.2em", fontWeight: 800, color: "#67e8f9" }}>
+            <Typography variant="overline" sx={{ letterSpacing: "0.2em", fontWeight: 800, color: "#a6eadf" }}>
               PATIENT DASHBOARD
             </Typography>
             <Typography variant="h4" sx={{ fontWeight: 800, mt: 0.5 }}>
@@ -175,7 +182,7 @@ function Profile() {
                     p: 2.5,
                     borderRadius: 4,
                     height: "100%",
-                    bgcolor: "rgba(19,99,223,0.04)",
+                    bgcolor: isDark ? "rgba(173,196,214,0.08)" : "rgba(19,99,223,0.04)",
                   }}
                   elevation={0}
                 >
@@ -209,11 +216,11 @@ function Profile() {
                     mt: 3,
                     p: 2.5,
                     borderRadius: 4,
-                    bgcolor: "rgba(34, 197, 94, 0.08)",
+                    bgcolor: isDark ? "rgba(91,208,162,0.12)" : "rgba(34, 197, 94, 0.08)",
                   }}
                   elevation={0}
                 >
-                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: "#166534", mb: 2 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: isDark ? "#8ce6bf" : "#166534", mb: 2 }}>
                     Next Appointment
                   </Typography>
                   {upcomingAppointments.length > 0 ? (
@@ -348,8 +355,8 @@ function Profile() {
                             width: "100%",
                             py: 1.35,
                             fontWeight: 800,
-                            background: "linear-gradient(90deg, #67e8f9, #22c55e)",
-                            color: "#04111f",
+                            background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                            color: "#143145",
                           }}
                         >
                           {updating ? "Updating..." : "Update Profile"}
@@ -370,12 +377,12 @@ function Profile() {
                 sx={{ 
                   p: { xs: 3, md: 5 }, 
                   borderRadius: 4, 
-                  bgcolor: "rgba(19,99,223,0.03)", 
-                  border: "2px dashed rgba(19,99,223,0.2)", 
+                  bgcolor: isDark ? "rgba(173,196,214,0.06)" : "rgba(19,99,223,0.03)", 
+                  border: `2px dashed ${isDark ? "rgba(173,196,214,0.18)" : "rgba(19,99,223,0.2)"}`, 
                   textAlign: "center", 
                   cursor: "pointer", 
                   transition: "all 0.2s",
-                  "&:hover": { bgcolor: "rgba(19,99,223,0.08)", borderColor: "rgba(19,99,223,0.4)" } 
+                  "&:hover": { bgcolor: isDark ? "rgba(173,196,214,0.10)" : "rgba(19,99,223,0.08)", borderColor: isDark ? "rgba(173,196,214,0.32)" : "rgba(19,99,223,0.4)" } 
                 }} 
                 elevation={0} 
                 onClick={() => alert("Enterprise Vault File Sync Initiated (Simulation)")}

@@ -9,10 +9,13 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { fetchConversation, sendMessage, markMessagesAsRead } from "../api";
 
 function Messages() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const { userId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -74,7 +77,9 @@ function Messages() {
       sx={{
         minHeight: "100vh",
         py: { xs: 4, md: 6 },
-        background: "linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+        background: isDark
+          ? "linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+          : "linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)",
       }}
     >
       <Container maxWidth="md">
@@ -83,7 +88,7 @@ function Messages() {
             borderRadius: 5,
             overflow: "hidden",
             bgcolor: "background.paper",
-            border: "1px solid rgba(19,99,223,0.08)",
+            border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(19,99,223,0.08)"}`,
           }}
         >
           <Box
@@ -91,7 +96,9 @@ function Messages() {
               p: 3,
               color: "white",
               background:
-                "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
+                isDark
+                  ? "linear-gradient(135deg, rgba(11,29,42,0.96), rgba(22,61,69,0.92))"
+                  : "linear-gradient(135deg, rgba(10,24,36,0.96), rgba(18,74,82,0.92))",
             }}
           >
             <Typography variant="h4" sx={{ fontWeight: 800 }}>
@@ -102,7 +109,7 @@ function Messages() {
             </Typography>
           </Box>
 
-          <Box sx={{ p: 2, maxHeight: "62vh", overflowY: "auto", bgcolor: "rgba(255,255,255,0.6)" }}>
+          <Box sx={{ p: 2, maxHeight: "62vh", overflowY: "auto", bgcolor: isDark ? "rgba(8,17,27,0.72)" : "rgba(255,255,255,0.6)" }}>
             <Stack spacing={1.5}>
               {messages.map((msg) => {
                 const isIncoming = String(msg.from) === String(userId);
@@ -122,9 +129,9 @@ function Messages() {
                         sx={{
                           p: 1.5,
                           borderRadius: 3,
-                          bgcolor: isIncoming ? "white" : "primary.main",
-                          color: isIncoming ? "text.primary" : "white",
-                          boxShadow: "0 10px 24px rgba(15,23,42,0.08)",
+                          bgcolor: isIncoming ? (isDark ? "rgba(14,24,37,0.96)" : "white") : "primary.main",
+                          color: isIncoming ? "text.primary" : (isDark ? "#08111b" : "white"),
+                          boxShadow: isDark ? "0 10px 24px rgba(0,0,0,0.22)" : "0 10px 24px rgba(15,23,42,0.08)",
                         }}
                         elevation={0}
                       >
@@ -165,8 +172,8 @@ function Messages() {
                 onClick={handleSendMessage}
                 sx={{
                   minWidth: { xs: "100%", sm: 140 },
-                  background: "linear-gradient(90deg, #67e8f9, #22c55e)",
-                  color: "#04111f",
+                  background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                  color: "#143145",
                 }}
               >
                 Send

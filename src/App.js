@@ -1,11 +1,11 @@
 import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Box } from '@mui/material';
 import { io } from 'socket.io-client';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import './App.css';
 
 // Lazy load components for better performance
 const Login = lazy(() => import('./components/Login'));
@@ -167,10 +167,12 @@ function App() {
 
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <Header />
-      <Suspense fallback={<div>Loading...</div>}>
-        <AnimatedRoutes />
-      </Suspense>
+      <div className="app-shell">
+        <Header />
+        <Suspense fallback={<div className="app-loading">Loading your care dashboard...</div>}>
+          <AnimatedRoutes />
+        </Suspense>
+      </div>
     </Router>
   );
 }

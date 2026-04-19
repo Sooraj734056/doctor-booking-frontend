@@ -19,6 +19,7 @@ import {
   Skeleton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { format, isToday, isTomorrow } from "date-fns";
 import EventIcon from "@mui/icons-material/Event";
@@ -29,6 +30,8 @@ import VideocamRoundedIcon from "@mui/icons-material/VideocamRounded";
 import { JitsiMeeting } from '@jitsi/react-sdk';
 
 function MyAppointments() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -120,7 +123,7 @@ function MyAppointments() {
 
   if (loading) {
     return (
-      <Box sx={{ minHeight: "100vh", py: 6, px: 2, background: "linear-gradient(180deg, #f7fbff 0%, #e9f3fc 100%)" }}>
+      <Box sx={{ minHeight: "100vh", py: 6, px: 2, background: isDark ? "linear-gradient(180deg, #08111b 0%, #0d1726 100%)" : "linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)" }}>
         <Container maxWidth="lg">
           <Typography variant="h4" sx={{ textAlign: "center", mb: 4, fontWeight: 800 }}>
             My Appointments
@@ -153,7 +156,9 @@ function MyAppointments() {
         minHeight: "100vh",
         py: { xs: 4, md: 6 },
         background:
-          "radial-gradient(circle at top right, rgba(103,232,249,0.16), transparent 28%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+          isDark
+            ? "radial-gradient(circle at top right, rgba(116,214,197,0.12), transparent 28%), linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+            : "radial-gradient(circle at top right, rgba(116,214,197,0.16), transparent 28%), linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)",
       }}
     >
       <Container maxWidth="lg">
@@ -164,7 +169,9 @@ function MyAppointments() {
             borderRadius: { xs: 4, md: 5 },
             color: "white",
             background:
-              "linear-gradient(135deg, rgba(7,18,39,0.96), rgba(13,110,139,0.92))",
+              isDark
+                ? "linear-gradient(135deg, rgba(11,29,42,0.96), rgba(22,61,69,0.92))"
+                : "linear-gradient(135deg, rgba(10,24,36,0.96), rgba(18,74,82,0.92))",
           }}
         >
           <Typography variant="overline" sx={{ letterSpacing: "0.24em", color: "rgba(255,255,255,0.72)", fontSize: { xs: '0.65rem', md: '0.75rem' } }}>
@@ -256,7 +263,7 @@ function MyAppointments() {
                     </Stack>
 
                     {app.notes && (
-                      <Paper sx={{ p: 1.5, borderRadius: 3, bgcolor: "rgba(19,99,223,0.04)" }} elevation={0}>
+                      <Paper sx={{ p: 1.5, borderRadius: 3, bgcolor: isDark ? "rgba(173,196,214,0.08)" : "rgba(19,99,223,0.04)" }} elevation={0}>
                         <Typography variant="body2" color="text.secondary">
                           {app.notes}
                         </Typography>
@@ -284,8 +291,8 @@ function MyAppointments() {
                           sx={{ 
                             py: 1.1, 
                             fontWeight: 800,
-                            background: "linear-gradient(90deg, #67e8f9, #2563eb)",
-                            color: "white"
+                            background: "linear-gradient(90deg, #74d6c5, #f2b66c)",
+                            color: "#143145"
                           }}
                         >
                           Join Consultation
@@ -331,7 +338,7 @@ function MyAppointments() {
         </Dialog>
 
         <Dialog fullScreen open={Boolean(activeMeeting)} onClose={() => setActiveMeeting(null)}>
-          <Box sx={{ height: '100vh', width: '100vw', bgcolor: '#0f172a', position: 'relative' }}>
+          <Box sx={{ height: '100vh', width: '100vw', bgcolor: isDark ? '#050b12' : '#0f172a', position: 'relative' }}>
             <Button 
               onClick={() => setActiveMeeting(null)} 
               variant="contained"

@@ -11,6 +11,7 @@ import {
   TextField,
   Stack,
   Chip,
+  useTheme,
 } from "@mui/material";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -18,6 +19,8 @@ import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
 import { toast } from "react-toastify";
 
 export default function DoctorDashboard() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [open, setOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
 
@@ -39,9 +42,9 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#f1f5f9", py: 5 }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: isDark ? "#08111b" : "#f3fbf8", py: 5 }}>
       <Container maxWidth="lg">
-        <Typography variant="h3" sx={{ fontWeight: 800, mb: 1, color: "#0f172a" }}>
+        <Typography variant="h3" sx={{ fontWeight: 800, mb: 1, color: "text.primary" }}>
           Doctor Workspace
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 5 }}>
@@ -51,7 +54,7 @@ export default function DoctorDashboard() {
         <Grid container spacing={3}>
           {pendingPatients.map((patient) => (
             <Grid item xs={12} md={4} key={patient.id}>
-              <Paper sx={{ p: 4, borderRadius: 4, borderTop: `4px solid ${patient.color}`, transition: "transform 0.2s", "&:hover": { transform: "translateY(-4px)", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" } }}>
+              <Paper sx={{ p: 4, borderRadius: 4, borderTop: `4px solid ${patient.color}`, bgcolor: "background.paper", transition: "transform 0.2s", "&:hover": { transform: "translateY(-4px)", boxShadow: isDark ? "0 10px 25px rgba(0,0,0,0.24)" : "0 10px 25px rgba(0,0,0,0.05)" } }}>
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
                   <Avatar sx={{ bgcolor: patient.color, width: 56, height: 56, fontWeight: 700 }}>
                     {patient.name.charAt(0)}
@@ -61,8 +64,8 @@ export default function DoctorDashboard() {
                     <Typography variant="body2" sx={{ fontWeight: 600, color: patient.color }}>{patient.time}</Typography>
                   </Box>
                 </Stack>
-                <Chip icon={<MonitorHeartRoundedIcon />} label={patient.condition} size="small" sx={{ mb: 3, bgcolor: "rgba(0,0,0,0.04)" }} />
-                <Button variant="contained" fullWidth startIcon={<EditNoteRoundedIcon />} onClick={() => handleWrite(patient)} sx={{ py: 1.2, fontWeight: 700, borderRadius: 2, bgcolor: "#0f172a", "&:hover": { bgcolor: "#1e293b" } }}>
+                <Chip icon={<MonitorHeartRoundedIcon />} label={patient.condition} size="small" sx={{ mb: 3, bgcolor: isDark ? "rgba(173,196,214,0.08)" : "rgba(0,0,0,0.04)" }} />
+                <Button variant="contained" fullWidth startIcon={<EditNoteRoundedIcon />} onClick={() => handleWrite(patient)} sx={{ py: 1.2, fontWeight: 700, borderRadius: 2, background: "linear-gradient(90deg, #74d6c5, #f2b66c)", color: "#143145" }}>
                   Write Prescription
                 </Button>
               </Paper>

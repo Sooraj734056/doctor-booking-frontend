@@ -12,6 +12,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { getFavoriteDoctorIds, toggleDoctorFavorite } from "../utils/favorites";
@@ -33,6 +34,8 @@ const specialties = [
 ];
 
 function DoctorList() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [doctors, setDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("All");
@@ -81,7 +84,9 @@ function DoctorList() {
         minHeight: "100vh",
         py: { xs: 4, md: 6 },
         background:
-          "radial-gradient(circle at top left, rgba(103,232,249,0.18), transparent 30%), radial-gradient(circle at top right, rgba(19,99,223,0.12), transparent 28%), linear-gradient(180deg, rgba(247,251,255,1) 0%, rgba(233,243,252,1) 100%)",
+          isDark
+            ? "radial-gradient(circle at top left, rgba(116,214,197,0.12), transparent 30%), radial-gradient(circle at top right, rgba(242,182,108,0.08), transparent 28%), linear-gradient(180deg, #08111b 0%, #0d1726 100%)"
+            : "radial-gradient(circle at top left, rgba(116,214,197,0.18), transparent 30%), radial-gradient(circle at top right, rgba(242,182,108,0.12), transparent 28%), linear-gradient(180deg, #f3fbf8 0%, #eef4ff 100%)",
       }}
     >
       <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4, lg: 5 } }}>
@@ -93,9 +98,11 @@ function DoctorList() {
             color: "white",
             position: "relative",
             overflow: "hidden",
-            background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+            background: isDark
+              ? "linear-gradient(135deg, #0b1d2a 0%, #163d45 100%)"
+              : "linear-gradient(135deg, #102330 0%, #1b4e59 100%)",
             border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+            boxShadow: isDark ? "0 20px 50px rgba(0,0,0,0.28)" : "0 20px 50px rgba(0,0,0,0.15)",
           }}
         >
           {/* Subtle abstract background element */}
@@ -106,7 +113,7 @@ function DoctorList() {
               right: "-10%",
               width: "400px",
               height: "400px",
-              background: "radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(116,214,197,0.18) 0%, transparent 70%)",
               zIndex: 0,
               display: { xs: 'none', md: 'block' }
             }}
@@ -118,7 +125,7 @@ function DoctorList() {
                 variant="overline"
                 sx={{ 
                   letterSpacing: "0.3em", 
-                  color: "#38bdf8", 
+                  color: "#a6eadf", 
                   fontWeight: 800,
                   mb: 1,
                   display: "block",
@@ -134,7 +141,7 @@ function DoctorList() {
                   lineHeight: { xs: 1.2, md: 1.1 }, 
                   fontWeight: 900,
                   mb: 2,
-                  background: "linear-gradient(to right, #fff, #94a3b8)",
+                  background: "linear-gradient(to right, #fffaf2, rgba(173,196,214,0.8))",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   wordBreak: "break-word"
@@ -143,19 +150,19 @@ function DoctorList() {
                 Find your perfect healthcare match.
               </Typography>
 
-              <Typography sx={{ maxWidth: 600, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, fontSize: "1.1rem" }}>
+              <Typography sx={{ maxWidth: 600, color: "rgba(255,255,255,0.72)", lineHeight: 1.8, fontSize: "1.1rem" }}>
                 Connect with world-class specialists through our advanced directory. Premium care is just one click away.
               </Typography>
             </Grid>
             <Grid item xs={12} md={4}>
               <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                <Box sx={{ p: 2.5, borderRadius: "20px", bgcolor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                <Box sx={{ p: 2.5, borderRadius: "20px", bgcolor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
                   <Typography variant="h3" sx={{ fontWeight: 900, color: "#fff" }}>{stats.total}</Typography>
-                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.4)", fontWeight: 600, textTransform: "uppercase" }}>Active Doctors</Typography>
+                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.56)", fontWeight: 600, textTransform: "uppercase" }}>Active Doctors</Typography>
                 </Box>
-                <Box sx={{ p: 2.5, borderRadius: "20px", bgcolor: "rgba(37, 99, 235, 0.1)", border: "1px solid rgba(37, 99, 235, 0.2)" }}>
-                  <Typography variant="h3" sx={{ fontWeight: 900, color: "#38bdf8" }}>{stats.specialties}</Typography>
-                  <Typography variant="body2" sx={{ color: "rgba(56, 189, 248, 0.6)", fontWeight: 600, textTransform: "uppercase" }}>Specialties</Typography>
+                <Box sx={{ p: 2.5, borderRadius: "20px", bgcolor: "rgba(242,182,108,0.12)", border: "1px solid rgba(242,182,108,0.18)" }}>
+                  <Typography variant="h3" sx={{ fontWeight: 900, color: "#f2b66c" }}>{stats.specialties}</Typography>
+                  <Typography variant="body2" sx={{ color: "rgba(242,182,108,0.72)", fontWeight: 600, textTransform: "uppercase" }}>Specialties</Typography>
                 </Box>
               </Box>
             </Grid>
@@ -166,7 +173,7 @@ function DoctorList() {
           <Grid container spacing={2} alignItems="flex-end">
             <Grid xs={12} md={5}>
 
-              <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "#1e293b", ml: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "text.primary", ml: 1 }}>
                 Search by Specialist Name
               </Typography>
               <TextField
@@ -182,17 +189,17 @@ function DoctorList() {
                   ),
                   sx: {
                     borderRadius: "16px",
-                    bgcolor: "#fff",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
+                    bgcolor: isDark ? "rgba(14,24,37,0.86)" : "#fff",
+                    boxShadow: isDark ? "0 8px 24px rgba(0,0,0,0.22)" : "0 4px 20px rgba(0,0,0,0.03)",
                     border: "none",
-                    "& fieldset": { border: "1px solid rgba(0,0,0,0.05)" },
-                    "&:hover fieldset": { borderColor: "#2563eb !important" },
+                    "& fieldset": { border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(0,0,0,0.05)"}` },
+                    "&:hover fieldset": { borderColor: `${theme.palette.primary.main} !important` },
                   }
                 }}
               />
             </Grid>
             <Grid xs={12} md={7}>
-              <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "#1e293b", ml: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 700, color: "text.primary", ml: 1 }}>
 
                 Filter by Expertise
               </Typography>
@@ -209,13 +216,13 @@ function DoctorList() {
                       fontWeight: 700,
                       py: 2,
                       transition: "all 0.2s",
-                      bgcolor: specialtyFilter === specialty ? "#2563eb" : "#fff",
-                      color: specialtyFilter === specialty ? "#fff" : "#64748b",
+                      bgcolor: specialtyFilter === specialty ? theme.palette.primary.main : (isDark ? "rgba(14,24,37,0.86)" : "#fff"),
+                      color: specialtyFilter === specialty ? (isDark ? "#08111b" : "#fffaf2") : "text.secondary",
                       border: "1px solid",
-                      borderColor: specialtyFilter === specialty ? "#2563eb" : "rgba(0,0,0,0.05)",
-                      boxShadow: specialtyFilter === specialty ? "0 8px 15px rgba(37,99,235,0.25)" : "none",
+                      borderColor: specialtyFilter === specialty ? theme.palette.primary.main : (isDark ? "rgba(173,196,214,0.12)" : "rgba(0,0,0,0.05)"),
+                      boxShadow: specialtyFilter === specialty ? "0 8px 15px rgba(15,118,110,0.22)" : "none",
                       "&:hover": {
-                        bgcolor: specialtyFilter === specialty ? "#1d4ed8" : "rgba(37,99,235,0.05)",
+                        bgcolor: specialtyFilter === specialty ? theme.palette.primary.dark : (isDark ? "rgba(173,196,214,0.08)" : "rgba(15,118,110,0.05)"),
                         transform: "translateY(-2px)"
                       }
                     }}
@@ -235,8 +242,8 @@ function DoctorList() {
                   sx={{ 
                     p: 3, 
                     borderRadius: "24px",
-                    bgcolor: "rgba(255, 255, 255, 0.4)",
-                    border: "1px solid rgba(255, 255, 255, 0.4)",
+                    bgcolor: isDark ? "rgba(14,24,37,0.72)" : "rgba(255, 255, 255, 0.55)",
+                    border: `1px solid ${isDark ? "rgba(173,196,214,0.12)" : "rgba(255, 255, 255, 0.4)"}`,
                   }} 
                   elevation={0}
                 >
