@@ -171,20 +171,28 @@ function DoctorDetails() {
                   Expert in <Box component="span" sx={{ color: "#f2b66c", fontWeight: 700 }}>{doctor.specialization}</Box> providing world-class medical consultation and advanced patient care.
                 </Typography>
 
-                <Stack direction="row" spacing={6} justifyContent={{ xs: "center", md: "flex-start" }} sx={{ mt: 2 }}>
-                  <Box>
-                    <Typography variant="h3" sx={{ fontWeight: 900, mb: -0.5 }}>{doctor.experience || "12"}</Typography>
-                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1.5 }}>Years Experience</Typography>
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: { xs: 3, sm: 4 },
+                    justifyContent: { xs: 'center', md: 'flex-start' },
+                  }}
+                >
+                  <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                    <Typography sx={{ fontWeight: 900, mb: -0.5, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' } }}>{doctor.experience || "12"}</Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1, fontSize: { xs: '0.6rem', sm: '0.7rem' } }}>Years Exp.</Typography>
                   </Box>
-                  <Box sx={{ borderLeft: "1px solid rgba(255,255,255,0.15)", pl: 4 }}>
-                    <Typography variant="h3" sx={{ fontWeight: 900, mb: -0.5 }}>{doctor.rating || "4.9"}</Typography>
-                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1.5 }}>Patient Satisfaction</Typography>
+                  <Box sx={{ borderLeft: { xs: 'none', sm: '1px solid rgba(255,255,255,0.15)' }, pl: { xs: 0, sm: 3 }, textAlign: { xs: 'center', md: 'left' } }}>
+                    <Typography sx={{ fontWeight: 900, mb: -0.5, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' } }}>{doctor.rating || "4.9"}</Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1, fontSize: { xs: '0.6rem', sm: '0.7rem' } }}>Satisfaction</Typography>
                   </Box>
-                  <Box sx={{ borderLeft: "1px solid rgba(255,255,255,0.15)", pl: 4 }}>
-                    <Typography variant="h3" sx={{ fontWeight: 900, mb: -0.5 }}>2k+</Typography>
-                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1.5 }}>Successful Cases</Typography>
+                  <Box sx={{ borderLeft: { xs: 'none', sm: '1px solid rgba(255,255,255,0.15)' }, pl: { xs: 0, sm: 3 }, textAlign: { xs: 'center', md: 'left' } }}>
+                    <Typography sx={{ fontWeight: 900, mb: -0.5, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' } }}>2k+</Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.5)", textTransform: "uppercase", fontWeight: 800, letterSpacing: 1, fontSize: { xs: '0.6rem', sm: '0.7rem' } }}>Cases</Typography>
                   </Box>
-                </Stack>
+                </Box>
               </Stack>
             </Grid>
           </Grid>

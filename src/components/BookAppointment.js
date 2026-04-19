@@ -361,179 +361,234 @@ function BookAppointment() {
         <Dialog 
           open={paymentDialogOpen} 
           onClose={() => !loading && setPaymentDialogOpen(false)}
-          PaperProps={{ sx: { borderRadius: '32px', width: '100%', maxWidth: 480, overflowX: 'hidden', overflowY: 'auto', maxHeight: '90vh' } }}
+          PaperProps={{ sx: { borderRadius: '28px', width: '100%', maxWidth: 480, mx: 2, overflowX: 'hidden', overflowY: 'auto', maxHeight: '92vh' } }}
         >
           <Box sx={{ position: 'relative' }}>
             {loading && !paymentSuccess && (
-              <Box sx={{ position: 'absolute', inset: 0, zIndex: 10, bgcolor: isDark ? 'rgba(8,17,27,0.85)' : 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <CircularProgress size={60} thickness={4} />
-                <Typography sx={{ mt: 3, fontWeight: 800 }}>Securing Transaction...</Typography>
+              <Box sx={{ position: 'absolute', inset: 0, zIndex: 10, bgcolor: isDark ? 'rgba(8,17,27,0.9)' : 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '28px' }}>
+                <CircularProgress size={60} thickness={4} sx={{ color: '#74d6c5' }} />
+                <Typography sx={{ mt: 3, fontWeight: 800, fontSize: '1.1rem' }}>Securing Transaction...</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>Please do not close this window</Typography>
               </Box>
             )}
 
             {paymentSuccess && (
-              <Box sx={{ position: 'absolute', inset: 0, zIndex: 11, bgcolor: isDark ? '#08111b' : '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', p: 4 }}>
-                <Avatar sx={{ bgcolor: '#22c55e', width: 100, height: 100, mb: 3 }}>
-                  <CheckCircleRoundedIcon sx={{ fontSize: 60 }} />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 900, mb: 1 }}>Successful!</Typography>
-                <Typography color="text.secondary">Your appointment is now confirmed.</Typography>
+              <Box sx={{ position: 'absolute', inset: 0, zIndex: 11, bgcolor: isDark ? '#08111b' : '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', p: 5, borderRadius: '28px' }}>
+                <Box sx={{ width: 100, height: 100, borderRadius: '50%', bgcolor: 'rgba(34,197,94,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+                  <CheckCircleRoundedIcon sx={{ fontSize: 60, color: '#22c55e' }} />
+                </Box>
+                <Typography variant="h4" sx={{ fontWeight: 900, mb: 1 }}>Payment Successful!</Typography>
+                <Typography color="text.secondary" sx={{ fontWeight: 500 }}>Your appointment has been confirmed.</Typography>
               </Box>
             )}
 
-            <Box sx={{ p: { xs: 3, md: 5 } }}>
-              <Stack direction="row" spacing={2.5} alignItems="center" sx={{ mb: 4 }}>
-                <Avatar sx={{ bgcolor: "#22c55e", width: 50, height: 50 }}>
-                  <PaymentRoundedIcon />
-                </Avatar>
-                <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 900 }}>Finalize Securely</Typography>
-                  <Typography variant="body2" color="text.secondary">Amount: <Box component="span" sx={{ fontWeight: 900, color: 'text.primary' }}>$50.00</Box></Typography>
-                </Box>
+            <Box sx={{ p: { xs: 3, sm: 4 } }}>
+              {/* Header */}
+              <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 3 }}>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Box sx={{ p: 1.5, borderRadius: 3, background: 'linear-gradient(135deg,#74d6c5,#f2b66c)' }}>
+                    <PaymentRoundedIcon sx={{ color: '#143145', fontSize: '1.4rem' }} />
+                  </Box>
+                  <Box>
+                    <Typography variant="h5" sx={{ fontWeight: 900, lineHeight: 1.2 }}>Secure Checkout</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Total: <Box component="span" sx={{ fontWeight: 900, color: '#74d6c5' }}>$50.00</Box>
+                    </Typography>
+                  </Box>
+                </Stack>
               </Stack>
 
-              <Box sx={{ mb: 4, bgcolor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)', borderRadius: 4, p: 0.5 }}>
-                <Grid container>
-                  {["card", "upi", "wallet"].map((method) => (
-                    <Grid item xs={4} key={method}>
-                      <ButtonBase
-                        onClick={() => setPaymentMethod(method)}
-                        sx={{
-                          display: 'block',
-                          width: '100%',
-                          py: 1.5,
-                          textAlign: 'center',
-                          borderRadius: 3.5,
-                          fontWeight: 800,
-                          fontSize: '0.8rem',
-                          textTransform: 'uppercase',
-                          letterSpacing: 1,
-                          bgcolor: paymentMethod === method ? (isDark ? '#74d6c5' : '#143145') : 'transparent',
-                          color: paymentMethod === method ? (isDark ? '#143145' : 'white') : 'text.secondary',
-                          transition: 'all 0.3s ease',
-                          "&:hover": {
-                            bgcolor: paymentMethod === method ? (isDark ? '#74d6c5' : '#143145') : (isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'),
-                          }
-                        }}
-                      >
-                        {method}
-                      </ButtonBase>
-                    </Grid>
-                  ))}
-                </Grid>
+              {/* SSL badge */}
+              <Box sx={{
+                mb: 3, px: 2, py: 1, borderRadius: 2.5,
+                bgcolor: isDark ? 'rgba(34,197,94,0.08)' : 'rgba(34,197,94,0.06)',
+                border: '1px solid rgba(34,197,94,0.2)',
+                display: 'flex', alignItems: 'center', gap: 1
+              }}>
+                <CheckCircleRoundedIcon sx={{ color: '#22c55e', fontSize: '0.9rem' }} />
+                <Typography variant="caption" sx={{ fontWeight: 700, color: '#22c55e', letterSpacing: 0.3 }}>
+                  256-bit SSL Encrypted · PCI-DSS Compliant · Secure Payment
+                </Typography>
+              </Box>
+
+              {/* Payment Method Tabs */}
+              <Box sx={{ mb: 3, bgcolor: isDark ? 'rgba(255,255,255,0.05)' : '#f1f5f9', borderRadius: 3, p: 0.5, display: 'flex', gap: 0.5 }}>
+                {[
+                  { key: "card",   label: "💳  Card" },
+                  { key: "upi",    label: "📱  UPI" },
+                  { key: "wallet", label: "👜  Wallet" }
+                ].map(({ key, label }) => (
+                  <Box
+                    key={key}
+                    onClick={() => setPaymentMethod(key)}
+                    sx={{
+                      flex: 1, py: 1.3, textAlign: 'center', borderRadius: 2.5, cursor: 'pointer',
+                      fontWeight: 800, fontSize: { xs: '0.68rem', sm: '0.78rem' },
+                      bgcolor: paymentMethod === key ? (isDark ? '#74d6c5' : '#143145') : 'transparent',
+                      color: paymentMethod === key ? (isDark ? '#143145' : 'white') : 'text.secondary',
+                      transition: 'all 0.25s ease', userSelect: 'none',
+                      '&:hover': {
+                        bgcolor: paymentMethod === key
+                          ? (isDark ? '#74d6c5' : '#143145')
+                          : (isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)'),
+                      }
+                    }}
+                  >
+                    {label}
+                  </Box>
+                ))}
               </Box>
 
               <Box component="form" onSubmit={handleConfirmPayment}>
+                {/* ── CARD ── */}
                 {paymentMethod === "card" && (
-                  <Stack spacing={3}>
-                    {/* Card Mockup */}
-                    <Box sx={{ 
-                      mb: 2, p: 4, borderRadius: '24px', 
-                      background: isDark ? 'linear-gradient(135deg, #050b12 0%, #102330 100%)' : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 
-                      color: 'white', position: 'relative', overflow: 'hidden',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+                  <Stack spacing={2.5}>
+                    {/* Visual credit card */}
+                    <Box sx={{
+                      p: { xs: 3, sm: 3.5 }, borderRadius: '20px',
+                      background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #163d45 100%)',
+                      color: 'white', position: 'relative', overflow: 'hidden', minHeight: 160,
+                      boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
                     }}>
-                      <Typography sx={{ fontSize: '1.4rem', letterSpacing: '0.15em', mb: 4, fontWeight: 700, fontFamily: 'monospace' }}>
-                        {cardDetails.number || "•••• •••• •••• ••••"}
+                      <Box sx={{ position: 'absolute', top: -40, right: -40, width: 150, height: 150, borderRadius: '50%', bgcolor: 'rgba(116,214,197,0.12)' }} />
+                      <Box sx={{ position: 'absolute', bottom: -50, left: -30, width: 130, height: 130, borderRadius: '50%', bgcolor: 'rgba(242,182,108,0.1)' }} />
+                      {/* Chip */}
+                      <Box sx={{ width: 42, height: 32, bgcolor: 'rgba(255,255,255,0.2)', borderRadius: 1.5, mb: 2.5, border: '1px solid rgba(255,255,255,0.15)' }} />
+                      <Typography sx={{ fontSize: { xs: '0.95rem', sm: '1.2rem' }, letterSpacing: '0.18em', fontWeight: 700, fontFamily: 'monospace', mb: 2.5 }}>
+                        {cardDetails.number}
                       </Typography>
-                      <Stack direction="row" justifyContent="space-between">
+                      <Stack direction="row" justifyContent="space-between" alignItems="flex-end">
                         <Box>
-                          <Typography variant="caption" sx={{ opacity: 0.5, display: 'block', textTransform: 'uppercase' }}>Holder</Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 700 }}>{cardDetails.name.toUpperCase() || "NAME SURNAME"}</Typography>
+                          <Typography variant="caption" sx={{ opacity: 0.5, textTransform: 'uppercase', letterSpacing: 1, display: 'block', fontSize: '0.6rem' }}>Card Holder</Typography>
+                          <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>{cardDetails.name}</Typography>
                         </Box>
                         <Box sx={{ textAlign: 'right' }}>
-                          <Typography variant="caption" sx={{ opacity: 0.5, display: 'block', textTransform: 'uppercase' }}>Expiry</Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 700 }}>{cardDetails.expiry || "12/28"}</Typography>
+                          <Typography variant="caption" sx={{ opacity: 0.5, textTransform: 'uppercase', letterSpacing: 1, display: 'block', fontSize: '0.6rem' }}>Expires</Typography>
+                          <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>{cardDetails.expiry}</Typography>
                         </Box>
                       </Stack>
                     </Box>
 
-                    <TextField 
-                      required fullWidth label="Card Number" 
-                      onChange={(e) => setCardDetails({...cardDetails, number: e.target.value || "•••• •••• •••• ••••"})}
+                    <TextField
+                      required fullWidth label="Card Number" placeholder="1234  5678  9012  3456"
+                      onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value || '•••• •••• •••• ••••' })}
                       inputProps={{ maxLength: 19 }}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
                     />
                     <Grid container spacing={2}>
                       <Grid item xs={7}>
-                        <TextField 
-                          required fullWidth label="Expiry Date" placeholder="MM / YY" 
-                          onChange={(e) => setCardDetails({...cardDetails, expiry: e.target.value || "MM/YY"})}
-                          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                        <TextField
+                          required fullWidth label="Expiry" placeholder="MM / YY"
+                          onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value || 'MM/YY' })}
+                          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
                         />
                       </Grid>
                       <Grid item xs={5}>
-                        <TextField 
-                          required fullWidth label="CVC" placeholder="•••" 
-                          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                        <TextField
+                          required fullWidth label="CVC" placeholder="•••"
+                          inputProps={{ maxLength: 4 }}
+                          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
                         />
                       </Grid>
                     </Grid>
-                    <TextField 
-                      required fullWidth label="Cardholder Name" 
-                      onChange={(e) => setCardDetails({...cardDetails, name: e.target.value || "CARDHOLDER NAME"})}
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                    <TextField
+                      required fullWidth label="Cardholder Name"
+                      onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value || 'CARDHOLDER NAME' })}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
                     />
                   </Stack>
                 )}
 
+                {/* ── UPI ── */}
                 {paymentMethod === "upi" && (
-                  <Stack spacing={4} alignItems="center" sx={{ py: 2 }}>
-                    <Box sx={{ 
-                      p: 3, bgcolor: 'white', borderRadius: 4, 
-                      border: '10px solid #f1f5f9', width: 200, height: 200,
-                      display: 'grid', placeItems: 'center', position: 'relative'
+                  <Stack spacing={3} alignItems="center" sx={{ py: 1 }}>
+                    <Box sx={{
+                      p: 2.5, bgcolor: 'white', borderRadius: 4,
+                      border: '10px solid #f1f5f9', width: 170, height: 170,
+                      display: 'grid', placeItems: 'center', position: 'relative',
+                      boxShadow: '0 4px 24px rgba(0,0,0,0.12)'
                     }}>
-                      <Box sx={{ width: '100%', height: '100%', background: 'repeating-linear-gradient(45deg, #0f172a, #0f172a 2px, transparent 2px, transparent 10px)', opacity: 0.8 }} />
-                      <Typography sx={{ position: 'absolute', bgcolor: 'white', px: 1, fontWeight: 900, color: '#143145', fontSize: '0.7rem' }}>SCAN TO PAY</Typography>
+                      <Box sx={{ width: '100%', height: '100%', background: 'repeating-linear-gradient(45deg, #0f172a, #0f172a 2px, transparent 2px, transparent 10px)', opacity: 0.85 }} />
+                      <Box sx={{ position: 'absolute', bgcolor: 'white', px: 1, py: 0.5, borderRadius: 1 }}>
+                        <Typography sx={{ fontWeight: 900, color: '#143145', fontSize: '0.65rem', letterSpacing: 0.5 }}>SCAN TO PAY</Typography>
+                      </Box>
                     </Box>
-                    <Typography variant="body2" color="text.secondary">Scan QR or enter UPI ID below</Typography>
-                    <TextField 
-                      fullWidth label="Enter UPI ID" placeholder="user@okaxis" 
-                      sx={{ "& .MuiOutlinedInput-root": { borderRadius: 3 } }}
+                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, textAlign: 'center' }}>
+                      Scan with any UPI app or enter your UPI ID below
+                    </Typography>
+                    <TextField
+                      fullWidth label="UPI ID" placeholder="yourname@okaxis"
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}
                     />
                   </Stack>
                 )}
 
+                {/* ── WALLET ── */}
                 {paymentMethod === "wallet" && (
                   <Stack spacing={1.5} sx={{ py: 1 }}>
-                    {["Paytm", "Google Pay", "PhonePe", "Amazon Pay"].map((wallet) => (
-                      <Box 
-                        key={wallet}
-                        sx={{ 
-                          p: 2.5, borderRadius: 3, border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
-                          display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
-                          "&:hover": { bgcolor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }
+                    {[
+                      { name: "Paytm",       color: "#00b9f1", emoji: "🔵" },
+                      { name: "Google Pay",   color: "#4285f4", emoji: "🔴" },
+                      { name: "PhonePe",      color: "#5f259f", emoji: "🟣" },
+                      { name: "Amazon Pay",   color: "#ff9900", emoji: "🟡" },
+                    ].map((w) => (
+                      <Box
+                        key={w.name}
+                        sx={{
+                          p: 2.2, borderRadius: 3,
+                          border: `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}`,
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          cursor: 'pointer', transition: 'all 0.2s ease',
+                          '&:hover': {
+                            borderColor: w.color,
+                            bgcolor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)',
+                            transform: 'translateX(4px)',
+                          }
                         }}
                       >
-                        <Typography fontWeight={700}>{wallet}</Typography>
-                        <Box sx={{ width: 22, height: 22, borderRadius: '50%', border: '2px solid #74d6c5' }} />
+                        <Stack direction="row" spacing={1.5} alignItems="center">
+                          <Typography sx={{ fontSize: '1.2rem' }}>{w.emoji}</Typography>
+                          <Typography fontWeight={700}>{w.name}</Typography>
+                        </Stack>
+                        <Box sx={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${w.color}` }} />
                       </Box>
                     ))}
                   </Stack>
                 )}
 
-                <Button 
-                  type="submit" 
-                  fullWidth 
-                  variant="contained" 
-                  sx={{ 
-                    mt: 4, py: 2.2, borderRadius: 4, fontWeight: 900, fontSize: '1.2rem', 
-                    background: 'linear-gradient(90deg, #74d6c5, #f2b66c)', 
-                    color: '#143145', boxShadow: '0 8px 30px rgba(116,214,197,0.3)',
-                    "&:hover": { transform: 'translateY(-2px)' }
+                {/* Order summary strip */}
+                <Box sx={{
+                  mt: 3, p: 2, borderRadius: 3,
+                  bgcolor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc',
+                  border: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)'}`,
+                }}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <PersonIcon sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+                      <Typography variant="body2" color="text.secondary" fontWeight={600}>Consultation Fee</Typography>
+                    </Stack>
+                    <Typography variant="body1" fontWeight={900} sx={{ color: '#74d6c5' }}>$50.00</Typography>
+                  </Stack>
+                </Box>
+
+                <Button
+                  type="submit" fullWidth variant="contained"
+                  sx={{
+                    mt: 2.5, py: 2, borderRadius: 3.5, fontWeight: 900, fontSize: '1rem',
+                    background: 'linear-gradient(90deg, #74d6c5, #f2b66c)',
+                    color: '#143145', letterSpacing: 0.5,
+                    boxShadow: '0 8px 30px rgba(116,214,197,0.3)',
+                    '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 14px 40px rgba(116,214,197,0.4)' }
                   }}
                 >
-                  Pay & Confirm Booking
+                  🔒 &nbsp;Pay $50.00 · Confirm Booking
                 </Button>
-                <Button 
-                  fullWidth 
-                  variant="text" 
-                  disabled={loading}
-                  sx={{ mt: 1, color: 'text.secondary', fontWeight: 700 }}
+                <Button
+                  fullWidth variant="text" disabled={loading}
+                  sx={{ mt: 0.5, color: 'text.secondary', fontWeight: 700, borderRadius: 3 }}
                   onClick={() => setPaymentDialogOpen(false)}
                 >
-                  Cancel Payment
+                  Cancel
                 </Button>
               </Box>
             </Box>
